@@ -1,62 +1,55 @@
-# Do's and Don'ts
+# Những điều nên và không nên làm
 
-The next two lists are heavily based on the excellent gist [Effective Modern CMake]. That list is much longer and more detailed, feel free to read it as well.
+Hai danh sách tiếp theo được dựa trên gist tuyệt vời [Effective Modern CMake]. Danh sách đó dài hơn và chi tiết hơn nhiều, bạn có thể đọc thêm nếu muốn.
 
-## CMake Antipatterns
+## Các mẫu CMake không nên làm
 
-- **Do not use global functions**: This includes `link_directories`, `include_libraries`, and similar.
-- **Don't add unneeded PUBLIC requirements**: You should avoid forcing something on users that is not required (`-Wall`). Make these PRIVATE instead.
-- **Don't GLOB files**: Make or another tool will not know if you add files without rerunning CMake. Note that CMake 3.12 adds a `CONFIGURE_DEPENDS` flag that makes this far better if you need to use it.
-- **Link to built files directly**: Always link to targets if available.
-- **Never skip PUBLIC/PRIVATE when linking**: This causes all future linking to be keyword-less.
+- **Không sử dụng các hàm toàn cục**: Bao gồm `link_directories`, `include_libraries`, và các hàm tương tự.
+- **Không thêm các yêu cầu PUBLIC không cần thiết**: Bạn nên tránh ép buộc người dùng sử dụng những thứ không cần thiết (`-Wall`). Hãy làm chúng PRIVATE thay thế.
+- **Không sử dụng GLOB để lấy tệp**: Make hoặc công cụ khác sẽ không biết nếu bạn thêm tệp mà không chạy lại CMake. Lưu ý rằng CMake 3.12 thêm cờ `CONFIGURE_DEPENDS` giúp cải thiện điều này nếu bạn cần sử dụng.
+- **Liên kết trực tiếp đến các tệp đã xây dựng**: Luôn liên kết đến các mục tiêu nếu có sẵn.
+- **Không bao giờ bỏ qua PUBLIC/PRIVATE khi liên kết**: Điều này sẽ khiến tất cả các liên kết trong tương lai không có từ khóa.
+## Mẫu CMake
 
-## CMake Patterns
+- **Xem CMake như mã nguồn**: Nó là mã nguồn. Nó cần phải sạch sẽ và dễ đọc như tất cả các mã nguồn khác.
+- **Suy nghĩ theo mục tiêu**: Các mục tiêu của bạn nên đại diện cho các khái niệm. Tạo một mục tiêu INTERFACE (IMPORTED) cho bất cứ thứ gì cần giữ nguyên và liên kết với nó.
+- **Xuất giao diện của bạn**: Bạn nên có thể chạy từ build hoặc install.
+- **Viết tệp Config.cmake**: Đây là điều mà một tác giả thư viện nên làm để hỗ trợ khách hàng.
+- **Tạo các mục tiêu ALIAS để giữ cho việc sử dụng nhất quán**: Sử dụng `add_subdirectory` và `find_package` nên cung cấp cùng các mục tiêu và không gian tên.
+- **Kết hợp các chức năng chung vào các hàm hoặc macro được ghi chú rõ ràng**: Thường thì hàm sẽ tốt hơn.
+- **Sử dụng tên hàm viết thường**: Các hàm và macro của CMake có thể được gọi bằng chữ thường hoặc chữ hoa. Luôn sử dụng chữ thường. Chữ hoa dành cho biến.
+- **Sử dụng `cmake_policy` và/hoặc phạm vi phiên bản**: Chính sách thay đổi vì lý do. Chỉ thiết lập từng phần chính sách OLD nếu bạn phải làm vậy.
 
-- **Treat CMake as code**: It is code. It should be as clean and readable as all other code.
-- **Think in targets**: Your targets should represent concepts. Make an (IMPORTED) INTERFACE target for anything that should stay together and link to that.
-- **Export your interface**: You should be able to run from build or install.
-- **Write a Config.cmake file**: This is what a library author should do to support clients.
-- **Make ALIAS targets to keep usage consistent**: Using `add_subdirectory` and `find_package` should provide the same targets and namespaces.
-- **Combine common functionality into clearly documented functions or macros**: Functions are better usually.
-- **Use lowercase function names**: CMake functions and macros can be called lower or upper case. Always use lower case. Upper case is for variables.
-- **Use `cmake_policy` and/or range of versions**: Policies change for a reason. Only piecemeal set OLD policies if you have to.
+## Chọn phiên bản tối thiểu vào năm 2024:
 
-## Selecting a minimum in 2024:
+Phiên bản CMake tối thiểu nào bạn nên _chạy_ cục bộ, và phiên bản tối thiểu nào bạn nên _hỗ trợ_ cho người dùng mã nguồn của bạn? Vì bạn đang đọc điều này, bạn nên có thể lấy một phiên bản phát hành trong vài phiên bản gần đây của CMake; làm điều đó, nó sẽ làm cho việc phát triển của bạn dễ dàng hơn. Để hỗ trợ, có hai cách để chọn phiên bản tối thiểu: dựa trên các tính năng được thêm vào (điều mà nhà phát triển quan tâm), hoặc trên các phiên bản CMake được cài đặt sẵn phổ biến (điều mà người dùng quan tâm).
 
-What minimum CMake should you _run_ locally, and what minimum should you _support_ for people using your
-code? Since you are reading this, you should be able to get a release in the last few versions of CMake;
-do that, it will make your development easier. For support, there are two ways to pick minimums: based on
-features added (which is what a developer cares about), or on common pre-installed CMakes (which is what a
-user cares about).
-
-Never select a minimum version older than the oldest compiler version you support. CMake should always be
-at least as new as your compiler.
-
-### What minimum to choose - OS support:
+Không bao giờ chọn phiên bản tối thiểu cũ hơn phiên bản trình biên dịch cũ nhất mà bạn hỗ trợ. CMake nên luôn luôn mới ít nhất bằng trình biên dịch của bạn.
+### Phiên bản tối thiểu nên chọn - Hỗ trợ hệ điều hành:
 
 - 3.16: Ubuntu 20.04.
 - 3.17: Amazon Linux
-- 3.19: First to support Apple Silicon.
+- 3.19: Hỗ trợ đầu tiên cho Apple Silicon.
 - 3.20: CentOS 8.
 - 3.22: Ubuntu 22.04.
-- 3.25: Debian 12 (11 backports)
+- 3.25: Debian 12 (backports từ 11)
 - 3.28: Ubuntu 24.04.
-- 3.29: Debian 13 (12 backports)
-- latest: pip/conda-forge/homebew/chocolaty, etc.
+- 3.29: Debian 13 (backports từ 12)
+- mới nhất: pip/conda-forge/homebrew/chocolaty, v.v.
 
-### What minimum to choose - Features:
+### Phiên bản tối thiểu nên chọn - Tính năng:
 
-- 3.11: `IMPORTED INTERFACE` setting, faster, FetchContent, `COMPILE_LANGUAGE` in IDEs
+- 3.11: Thiết lập `IMPORTED INTERFACE`, nhanh hơn, FetchContent, `COMPILE_LANGUAGE` trong IDEs
 - 3.12: C++20, `cmake --build build -j N`, `SHELL:`, FindPython
-- 3.14/3.15: CLI, FindPython updates
-- 3.16: Unity builds / precompiled headers, CUDA meta features
-- 3.17/3.18: Lots more CUDA, metaprogramming, FindPython updates
+- 3.14/3.15: CLI, cập nhật FindPython
+- 3.16: Unity builds / precompiled headers, tính năng meta CUDA
+- 3.17/3.18: Nhiều tính năng CUDA hơn, metaprogramming, cập nhật FindPython
 - 3.19: Presets
 - 3.20: C++23, `cmake_path`
-- 3.24: Package finder
-- 3.25: Blocks for scoping
-- 3.28: C++20 modules
-- 3.29: Build before test target
-- 3.30: Full C++26 support
+- 3.24: Trình tìm kiếm gói
+- 3.25: Blocks cho phạm vi
+- 3.28: Các module C++20
+- 3.29: Build trước khi kiểm tra mục tiêu
+- 3.30: Hỗ trợ đầy đủ C++26
 
 [effective modern cmake]: https://gist.github.com/mbinna/c61dbb39bca0e4fb7d1f73b0d66a4fd1
