@@ -1,12 +1,12 @@
-# Running CMake
+# Chạy CMake
 
-Before writing CMake, let's make sure you know how to run it to make things. This is true for almost all CMake projects, which is almost everything.
+Trước khi viết CMake, hãy đảm bảo bạn biết cách chạy nó để tạo ra các sản phẩm. Điều này đúng với hầu hết các dự án CMake, tức là hầu hết mọi thứ.
 
-## Building a project
+## Xây dựng một dự án
 
-Unless otherwise noted, you should always make a build directory and build from there. You can technically do an in-source build, but you'll have to be careful not to overwrite files or add them to git, so just don't.
+Trừ khi có ghi chú khác, bạn nên luôn tạo một thư mục build và xây dựng từ đó. Về mặt kỹ thuật, bạn có thể xây dựng trực tiếp trong thư mục nguồn, nhưng bạn sẽ phải cẩn thận để không ghi đè lên các tệp hoặc thêm chúng vào git, vì vậy tốt nhất là không nên làm vậy.
 
-Here's the Classic CMake Build Procedure (TM):
+Đây là Quy Trình Xây Dựng CMake Cổ Điển (TM):
 
 ```bash
 ~/package $ mkdir build
@@ -15,87 +15,85 @@ Here's the Classic CMake Build Procedure (TM):
 ~/package/build $ make
 ```
 
-You can replace the make line with `cmake --build .` if you'd like, and it will call `make` or whatever build tool you are using. If you are using a newer version of CMake (which you usually should be, except for checking compatibility with older CMake), you can instead do this:
+Bạn có thể thay thế dòng make bằng `cmake --build .` nếu bạn muốn, và nó sẽ gọi `make` hoặc bất kỳ công cụ xây dựng nào bạn đang sử dụng. Nếu bạn đang sử dụng phiên bản mới hơn của CMake (mà bạn thường nên sử dụng, trừ khi kiểm tra tính tương thích với CMake cũ hơn), bạn có thể làm như sau:
 
 ```bash
 ~/package $ cmake -S . -B build
 ~/package $ cmake --build build
 ```
 
-Any _one_ of these commands will install:
+Bất kỳ _một_ trong những lệnh này sẽ cài đặt:
 
 ```bash
-# From the build directory (pick one)
+# Từ thư mục build (chọn một)
 
 ~/package/build $ make install
 ~/package/build $ cmake --build . --target install
-~/package/build $ cmake --install . # CMake 3.15+ only
+~/package/build $ cmake --install . # Chỉ CMake 3.15+ 
 
-# From the source directory (pick one)
+# Từ thư mục nguồn (chọn một)
 
 ~/package $ make -C build install
 ~/package $ cmake --build build --target install
-~/package $ cmake --install build # CMake 3.15+ only
+~/package $ cmake --install build # Chỉ CMake 3.15+ 
 ```
+Vậy bạn nên sử dụng bộ phương pháp nào? Miễn là bạn _không quên_ nhập thư mục build làm đối số, việc làm việc ngoài thư mục build sẽ ngắn gọn hơn, và việc thay đổi mã nguồn sẽ dễ dàng hơn từ thư mục nguồn. Bạn nên cố gắng làm quen với việc sử dụng `--build`, vì điều đó sẽ giúp bạn không chỉ sử dụng `make` để xây dựng. Lưu ý rằng làm việc từ thư mục build lịch sử phổ biến hơn nhiều, và một số công cụ và lệnh (bao gồm CTest <3.20) vẫn yêu cầu chạy từ thư mục build.
 
-So which set of methods should you use? As long as you _do not forget_ to type the build directory as the argument, staying out of the build directory is shorter, and making source changes is easier from the source directory. You should try to get used to using `--build`, as that will free you from using only `make` to build. Note that working from the build directory is historically much more common, and some tools and commands (including CTest <3.20) still require running from the build directory.
+Để làm rõ, bạn có thể chỉ định CMake vào thư mục nguồn _từ thư mục build_, hoặc vào một thư mục build _đã tồn tại_ từ bất kỳ đâu.
 
-Just to clarify, you can point CMake at either the source directory _from the build directory_, or at an _existing_ build directory from anywhere.
+Nếu bạn sử dụng `cmake --build` thay vì gọi trực tiếp hệ thống build cơ bản, bạn có thể sử dụng `-v` cho các build chi tiết (CMake 3.14+), `-j N` cho các build song song trên N lõi (CMake 3.12+), và `--target` (bất kỳ phiên bản CMake nào) hoặc `-t` (CMake 3.15+) để chọn một mục tiêu. Nếu không, các lệnh này sẽ khác nhau giữa các hệ thống build, chẳng hạn như `VERBOSE=1 make` và `ninja -v`. Bạn cũng có thể sử dụng các biến môi trường cho những điều này, chẳng hạn như `CMAKE_BUILD_PARALLEL_LEVEL` (CMake 3.12+) và `VERBOSE` (CMake 3.14+).
 
-If you use `cmake --build` instead of directly calling the underlying build system, you can use `-v` for verbose builds (CMake 3.14+), `-j N` for parallel builds on N cores (CMake 3.12+), and `--target` (any version of CMake) or `-t` (CMake 3.15+) to pick a target. Otherwise, these commands vary between build systems, such as `VERBOSE=1 make` and `ninja -v`. You can instead use the environment variables for these, as well, such as `CMAKE_BUILD_PARALLEL_LEVEL` (CMake 3.12+) and `VERBOSE` (CMake 3.14+).
+## Chọn trình biên dịch
 
-## Picking a compiler
-
-Selecting a compiler must be done on the first run in an empty directory. It's not CMake syntax per se, but you might not be familiar with it. To pick Clang:
+Chọn trình biên dịch phải được thực hiện trong lần chạy đầu tiên trong một thư mục trống. Đây không phải là cú pháp của CMake, nhưng bạn có thể không quen thuộc với nó. Để chọn Clang:
 
 ```bash
 ~/package/build $ CC=clang CXX=clang++ cmake ..
 ```
 
-That sets the environment variables in bash for CC and CXX, and CMake will respect those variables. This sets it just for that one line, but that's the only time you'll need those; afterwards CMake continues to use the paths it deduces from those values.
+Điều đó đặt các biến môi trường trong bash cho CC và CXX, và CMake sẽ tôn trọng những biến đó. Điều này chỉ đặt nó cho dòng lệnh đó, nhưng đó là lần duy nhất bạn cần những biến đó; sau đó CMake sẽ tiếp tục sử dụng các đường dẫn mà nó suy ra từ những giá trị đó.
 
-## Picking a generator
+## Chọn bộ tạo
 
-You can build with a variety of tools; `make` is usually the default. To see all the tools CMake knows about on your system, run
+Bạn có thể xây dựng với nhiều công cụ khác nhau; `make` thường là mặc định. Để xem tất cả các công cụ mà CMake biết trên hệ thống của bạn, hãy chạy
 
 ```bash
 ~/package/build $ cmake --help
 ```
 
-And you can pick a tool with `-G"My Tool"` (quotes only needed if spaces are in the tool name). You should pick a tool on your first CMake call in a directory, just like the compiler. Feel free to have several build directories, like `build/` and `buildXcode`.
-You can set the environment variable `CMAKE_GENERATOR` to control the default generator (CMake 3.15+).
-Note that makefiles will only run in parallel if you explicitly pass a number of threads, such as `make -j2`, while Ninja will automatically run in parallel. You can directly pass a parallelization option such as `-j2` to the `cmake --build .` command in recent versions of CMake.
+Và bạn có thể chọn một công cụ với `-G"Tên Công Cụ"` (dấu ngoặc kép chỉ cần thiết nếu tên công cụ có khoảng trắng). Bạn nên chọn một công cụ trong lần gọi CMake đầu tiên trong một thư mục, giống như trình biên dịch. Hãy thoải mái tạo nhiều thư mục build, như `build/` và `buildXcode`.
+Bạn có thể đặt biến môi trường `CMAKE_GENERATOR` để kiểm soát bộ tạo mặc định (CMake 3.15+).
+Lưu ý rằng các makefile sẽ chỉ chạy song song nếu bạn truyền rõ ràng số luồng, chẳng hạn như `make -j2`, trong khi Ninja sẽ tự động chạy song song. Bạn có thể trực tiếp truyền tùy chọn song song như `-j2` vào lệnh `cmake --build .` trong các phiên bản CMake gần đây.
 
-## Setting options
+## Đặt tùy chọn
 
-You set options in CMake with `-D`. You can see a list of options with `-L`, or a list with human-readable help with `-LH`. If you don't list the source/build directory, the listing will not rerun CMake (`cmake -L` instead of `cmake -L .`).
+Bạn đặt tùy chọn trong CMake với `-D`. Bạn có thể xem danh sách các tùy chọn với `-L`, hoặc danh sách có trợ giúp dễ đọc với `-LH`. Nếu bạn không liệt kê thư mục nguồn/xây dựng, danh sách sẽ không chạy lại CMake (`cmake -L` thay vì `cmake -L .`).
 
-## Verbose and partial builds
+## Xây dựng chi tiết và một phần
 
-Although not all build tools support it, you can get verbose builds (pick one):
+Mặc dù không phải tất cả các công cụ xây dựng đều hỗ trợ, bạn có thể có các bản build chi tiết (chọn một):
 
 ```bash
-~/package $ cmake --build build --verbose # CMake 3.14+ only
+~/package $ cmake --build build --verbose # Chỉ CMake 3.14+
 ~/package/build $ VERBOSE=1 make
 ```
 
-You can actually write `make VERBOSE=1`, and make will also do the right thing, though that's a feature of `make` and not the command line in general.
+Bạn thực sự có thể viết `make VERBOSE=1`, và make cũng sẽ làm đúng, mặc dù đó là một tính năng của `make` và không phải là dòng lệnh nói chung.
 
-You can also build just a part of a build by specifying a target, such as the name of a library or executable you've defined in CMake, and make will just build that target.
+Bạn cũng có thể chỉ xây dựng một phần của build bằng cách chỉ định một mục tiêu, chẳng hạn như tên của thư viện hoặc tệp thực thi mà bạn đã định nghĩa trong CMake, và make sẽ chỉ xây dựng mục tiêu đó.
+## Tùy chọn
 
-## Options
+CMake hỗ trợ các tùy chọn được lưu trữ. Một biến trong CMake có thể được đánh dấu là "được lưu trữ", nghĩa là nó sẽ được ghi vào bộ nhớ đệm (một tệp gọi là `CMakeCache.txt` trong thư mục build) khi nó được gặp. Bạn có thể đặt trước (hoặc thay đổi) giá trị của một tùy chọn được lưu trữ trên dòng lệnh với `-D`. Khi CMake tìm kiếm một biến được lưu trữ, nó sẽ sử dụng giá trị hiện có và sẽ không ghi đè lên nó.
 
-CMake has support for cached options. A Variable in CMake can be marked as "cached", which means it will be written to the cache (a file called `CMakeCache.txt` in the build directory) when it is encountered. You can preset (or change) the value of a cached option on the command line with `-D`. When CMake looks for a cached variable, it will use the existing value and will not overwrite it.
+### Tùy chọn tiêu chuẩn
 
-### Standard options
+Đây là các tùy chọn CMake phổ biến cho hầu hết các gói:
 
-These are common CMake options to most packages:
+- `-DCMAKE_BUILD_TYPE=` Chọn từ Release, RelWithDebInfo, Debug, hoặc đôi khi nhiều hơn.
+- `-DCMAKE_INSTALL_PREFIX=` Vị trí để cài đặt. Cài đặt hệ thống trên UNIX thường là `/usr/local` (mặc định), thư mục người dùng thường là `~/.local`, hoặc bạn có thể chọn một thư mục khác.
+- `-DBUILD_SHARED_LIBS=` Bạn có thể đặt giá trị này là `ON` hoặc `OFF` để kiểm soát mặc định cho các thư viện chia sẻ (tác giả có thể chọn một trong hai thay vì sử dụng mặc định, tuy nhiên)
+- `-DBUILD_TESTING=` Đây là tên phổ biến để bật kiểm tra, không phải tất cả các gói đều sử dụng nó, mặc dù đôi khi có lý do chính đáng.
 
-- `-DCMAKE_BUILD_TYPE=` Pick from Release, RelWithDebInfo, Debug, or sometimes more.
-- `-DCMAKE_INSTALL_PREFIX=` The location to install to. System install on UNIX would often be `/usr/local` (the default), user directories are often `~/.local`, or you can pick a folder.
-- `-DBUILD_SHARED_LIBS=` You can set this `ON` or `OFF` to control the default for shared libraries (the author can pick one vs. the other explicitly instead of using the default, though)
-- `-DBUILD_TESTING=` This is a common name for enabling tests, not all packages use it, though, sometimes with good reason.
+## Gỡ lỗi các tệp CMake của bạn
 
-## Debugging your CMake files
-
-We've already mentioned verbose output for the build, but you can also see verbose CMake configure output too. The `--trace` option will print every line of CMake that is run. Since this is very verbose, CMake 3.7 added `--trace-source="filename"`, which will print out every executed line of just the file you are interested in when it runs. If you select the name of the file you are interested in debugging (usually by selecting the parent directory when debugging a CMakeLists.txt, since all of those have the same name), you can just see the lines that run in that file. Very useful!
+Chúng tôi đã đề cập đến đầu ra chi tiết cho quá trình build, nhưng bạn cũng có thể xem đầu ra chi tiết khi cấu hình CMake. Tùy chọn `--trace` sẽ in ra từng dòng của CMake được chạy. Vì điều này rất chi tiết, CMake 3.7 đã thêm `--trace-source="tên tệp"`, sẽ in ra từng dòng được thực thi của chỉ tệp bạn quan tâm khi nó chạy. Nếu bạn chọn tên của tệp bạn quan tâm để gỡ lỗi (thường bằng cách chọn thư mục cha khi gỡ lỗi một CMakeLists.txt, vì tất cả chúng đều có cùng tên), bạn có thể chỉ xem các dòng chạy trong tệp đó. Rất hữu ích!
