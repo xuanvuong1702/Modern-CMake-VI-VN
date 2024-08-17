@@ -81,7 +81,54 @@ Nó dễ dàng (1-2 dòng trong nhiều trường hợp), và bạn sẽ thấy 
 
 Cuốn sách này cố gắng giải quyết vấn đề về các ví dụ kém và các thực hành tốt nhất mà bạn sẽ tìm thấy tràn lan trên web.
 
-## Các nguồn khác
+# Mục lục
+
+- [Giới thiệu về CMake Hiện Đại](README.md)
+  - [Cài đặt CMake](chapters/intro/installing.md)
+  - [Chạy CMake](chapters/intro/running.md)
+  - [Những điều nên và không nên làm](chapters/intro/dodonot.md)
+  - [Có gì mới trong CMake](chapters/intro/newcmake.md)
+- [Giới thiệu về những điều cơ bản](chapters/basics.md)
+  - [Biến và Bộ nhớ đệm](chapters/basics/variables.md)
+  - [Lập trình trong CMake](chapters/basics/functions.md)
+  - [Giao tiếp với mã của bạn](chapters/basics/comms.md)
+  - [Cách cấu trúc dự án của bạn](chapters/basics/structure.md)
+  - [Chạy các chương trình khác](chapters/basics/programs.md)
+  - [Một ví dụ đơn giản](chapters/basics/example.md)
+- [Thêm tính năng](chapters/features.md)
+  - [C++11 và các phiên bản sau](chapters/features/cpp11.md)
+  - [Các nhu cầu nhỏ nhưng phổ biến](chapters/features/small.md)
+  - [Tiện ích](chapters/features/utilities.md)
+  - [Các module hữu ích](chapters/features/modules.md)
+  - [IDE](chapters/features/ides.md)
+  - [Gỡ lỗi](chapters/features/debug.md)
+- [Bao gồm các dự án](chapters/projects.md)
+  - [Submodule](chapters/projects/submodule.md)
+  - [DownloadProject](chapters/projects/download.md)
+  - [Fetch (CMake 3.11)](chapters/projects/fetch.md)
+- [Kiểm thử](chapters/testing.md)
+  - [GoogleTest](chapters/testing/googletest.md)
+  - [Catch](chapters/testing/catch.md)
+- [Xuất và Cài đặt](chapters/install.md)
+  - [Cài đặt](chapters/install/installing.md)
+  - [Xuất](chapters/install/exporting.md)
+  - [Đóng gói](chapters/install/packaging.md)
+- [Tìm kiếm thư viện (Gói)](chapters/packages.md)
+  - [CUDA](chapters/packages/CUDA.md)
+  - [OpenMP](chapters/packages/OpenMP.md)
+  - [Boost](chapters/packages/Boost.md)
+  - [MPI](chapters/packages/MPI.md)
+  - [ROOT](chapters/packages/ROOT.md)
+    - [Ví dụ UseFile](examples/root-usefile/README.md)
+    - [Ví dụ đơn giản](examples/root-simple/README.md)
+    - [Ví dụ Dictionary](examples/root-dict/README.md)
+  - [Minuit2](chapters/packages/Minuit2.md)
+
+<!--
+* [Tải xuống PDF](ref://modern-cmake.pdf)
+* [Duyệt mã nguồn](https://gitlab.com/CLIUtils/modern-cmake) -->
+
+# Các nguồn khác
 
 Các tài liệu khác từ tác giả gốc của cuốn sách này:
 
