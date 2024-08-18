@@ -1,37 +1,31 @@
-# Introduction to the basics
+# Giới thiệu về những điều cơ bản
 
-## Minimum Version
+## Phiên bản tối thiểu
 
-Here's the first line of every `CMakeLists.txt`, which is the required name of
-the file CMake looks for:
+Đây là dòng đầu tiên của mọi `CMakeLists.txt`, là tên tệp bắt buộc mà CMake tìm kiếm:
+
 
 ```cmake
 cmake_minimum_required(VERSION 3.15)
 ```
+Hãy đề cập một chút về cú pháp của CMake. Tên lệnh
+{{ command.format('cmake_minimum_required') }} không phân biệt chữ hoa chữ thường, vì vậy thực hành phổ biến
+là sử dụng chữ thường. [^1] `VERSION` là một từ khóa đặc biệt cho hàm này.
+Và giá trị của phiên bản theo sau từ khóa. Như ở mọi nơi trong
+cuốn sách này, chỉ cần nhấp vào tên lệnh để xem tài liệu chính thức,
+và sử dụng menu thả xuống để chuyển đổi tài liệu giữa các phiên bản CMake.
 
-Let's mention a bit of CMake syntax. The command name
-{{ command.format('cmake_minimum_required') }} is case insensitive, so the common practice
-is to use lower case. [^1] The `VERSION` is a special keyword for this
-function. And the value of the version follows the keyword. Like everywhere in
-this book, just click on the command name to see the official documentation,
-and use the dropdown to switch documentation between CMake versions.
-
-This line is special! [^2] The version of CMake will also dictate the policies,
-which define behavior changes. So, if you set `minimum_required` to `VERSION 2.8`, you'll get the wrong linking behavior on macOS, for example, even in the
-newest CMake versions. If you set it to 3.3 or less, you'll get the wrong
-hidden symbols behaviour, etc. A list of policies and versions is available at
+Dòng này đặc biệt! [^2] Phiên bản của CMake cũng sẽ quyết định các chính sách,
+định nghĩa các thay đổi hành vi. Vì vậy, nếu bạn đặt `minimum_required` thành `VERSION 2.8`, bạn sẽ gặp phải hành vi liên kết sai trên macOS, chẳng hạn, ngay cả trong các
+phiên bản CMake mới nhất. Nếu bạn đặt nó thành 3.3 hoặc thấp hơn, bạn sẽ gặp phải hành vi
+ẩn ký hiệu sai, v.v. Một danh sách các chính sách và phiên bản có sẵn tại
 {{ cmake.format('policies') }}.
 
-Starting in CMake 3.12, this supports a range, such as `VERSION 3.15...3.30`;
-this means you support as low as 3.15 but have also tested it with the new
-policy settings up to 3.30. This is much nicer on users that need the better
-settings, and due to a trick in the syntax, it's backward compatible with older
-versions of CMake (though actually running CMake 3.1-3.11 will only set the old
-version of the policies, since those versions didn't treat this specially). New
-versions of policies tend to be most important for macOS and Windows users, who
-also usually have a very recent version of CMake.
+Bắt đầu từ CMake 3.12, điều này hỗ trợ một phạm vi, chẳng hạn như `VERSION 3.15...3.30`;
+điều này có nghĩa là bạn hỗ trợ ít nhất là 3.15 nhưng cũng đã kiểm tra nó với các thiết lập chính sách mới
+đến 3.30. Điều này thân thiện hơn nhiều với người dùng cần các thiết lập tốt hơn, và nhờ một mẹo trong cú pháp, nó tương thích ngược với các phiên bản cũ hơn của CMake (mặc dù thực tế chạy CMake 3.1-3.11 sẽ chỉ đặt phiên bản cũ của các chính sách, vì các phiên bản đó không xử lý điều này đặc biệt). Các phiên bản mới của các chính sách thường quan trọng nhất đối với người dùng macOS và Windows, những người cũng thường có phiên bản CMake rất mới.
 
-This is what new projects should do:
+Đây là những gì các dự án mới nên làm:
 
 ```cmake
 cmake_minimum_required(VERSION 3.15...3.30)
@@ -40,93 +34,79 @@ cmake_minimum_required(VERSION 3.15...3.30)
 
 :::{tip}
 
-If you really need to set to a low value here, you can use
-{{ command.format('cmake_policy') }} to conditionally increase the policy level or set a
-specific policy.
+Nếu bạn thực sự cần đặt giá trị thấp ở đây, bạn có thể sử dụng
+{{ command.format('cmake_policy') }} để tăng mức chính sách một cách có điều kiện hoặc đặt một
+chính sách cụ thể.
 
 :::
 
-## Setting a project
+## Thiết lập một dự án
 
-Now, every top-level CMake file will have the next line:
+Bây giờ, mọi tệp CMake cấp cao nhất sẽ có dòng sau:
 
 ```cmake
 project(MyProject VERSION 1.0
                   DESCRIPTION "Very nice project"
                   LANGUAGES CXX)
 ```
-
-Now we see even more syntax. Strings are quoted, whitespace doesn't matter, and
-the name of the project is the first argument (positional). All the keyword
-arguments here are optional. The version sets a bunch of variables, like
-`MyProject_VERSION` and `PROJECT_VERSION`. The languages are `C`, `CXX`,
-`Fortran`, `ASM`, `CUDA` (CMake 3.8+), `CSharp` (3.8+), and `SWIFT` (CMake
-3.15+ experimental). `C CXX` is the default. In CMake 3.9, `DESCRIPTION` was
-added to set a project description, as well. The documentation for
-{{ command.format('project') }} may be helpful.
+Bây giờ chúng ta thấy thêm cú pháp. Các chuỗi được đặt trong dấu ngoặc kép, khoảng trắng không quan trọng, và tên của dự án là đối số đầu tiên (theo vị trí). Tất cả các đối số từ khóa ở đây đều là tùy chọn. Phiên bản thiết lập một loạt các biến, như `MyProject_VERSION` và `PROJECT_VERSION`. Các ngôn ngữ là `C`, `CXX`, `Fortran`, `ASM`, `CUDA` (CMake 3.8+), `CSharp` (3.8+), và `SWIFT` (CMake 3.15+ thử nghiệm). `C CXX` là mặc định. Trong CMake 3.9, `DESCRIPTION` đã được thêm vào để thiết lập mô tả dự án. Tài liệu cho {{ command.format('project') }} có thể hữu ích.
 
 :::{tip}
 
-You can add
-[comments](https://cmake.org/cmake/help/latest/manual/cmake-language.7.html#comments)
-with the `#` character. CMake does have an inline syntax for comments too, but
-it's rarely used.
+Bạn có thể thêm
+[bình luận](https://cmake.org/cmake/help/latest/manual/cmake-language.7.html#comments)
+với ký tự `#`. CMake cũng có cú pháp bình luận nội tuyến, nhưng hiếm khi được sử dụng.
 
 :::
+Không có gì đặc biệt về tên dự án. Không có mục tiêu nào được thêm vào tại thời điểm này.
 
-There's really nothing special about the project name. No targets are added at this point.
+## Tạo một tệp thực thi
 
-## Making an executable
-
-Although libraries are much more interesting, and we'll spend most of our time
-with them, let's start with a simple executable.
+Mặc dù thư viện thú vị hơn nhiều, và chúng ta sẽ dành phần lớn thời gian với chúng, hãy bắt đầu với một tệp thực thi đơn giản.
 
 ```cmake
 add_executable(one two.cpp three.h)
 ```
+Có một số điều cần giải thích ở đây. `one` vừa là tên của tệp thực thi được tạo ra, vừa là tên của mục tiêu CMake được tạo ra (bạn sẽ nghe nhiều hơn về các mục tiêu sớm thôi, tôi hứa). Danh sách tệp nguồn đi kèm ngay sau đó, và bạn có thể liệt kê bao nhiêu tùy thích. CMake rất thông minh, và sẽ chỉ biên dịch các tệp có phần mở rộng nguồn. Các tệp tiêu đề sẽ, cho hầu hết các mục đích, bị bỏ qua; lý do duy nhất để liệt kê chúng là để chúng hiển thị trong các IDE. Các mục tiêu xuất hiện dưới dạng thư mục trong nhiều IDE. Thông tin thêm về hệ thống xây dựng chung và các mục tiêu có sẵn tại {{ cmake.format('buildsystem') }}.
 
-There are several things to unpack here. `one` is both the name of the executable file generated, and the name of the CMake target created (you'll hear a lot more about targets soon, I promise). The source file list comes next, and you can list as many as you'd like. CMake is smart, and will only compile source file extensions. The headers will be, for most intents and purposes, ignored; the only reason to list them is to get them to show up in IDEs. Targets show up as folders in many IDEs. More about the general build system and targets is available at {{ cmake.format('buildsystem') }}.
+## Tạo một thư viện
 
-## Making a library
-
-Making a library is done with {{ command.format('add_library') }}, and is just about as simple:
+Tạo một thư viện được thực hiện với {{ command.format('add_library') }}, và cũng đơn giản như vậy:
 
 ```cmake
 add_library(one STATIC two.cpp three.h)
 ```
 
-You get to pick a type of library, STATIC, SHARED, or MODULE. If you leave this choice off, the value of `BUILD_SHARED_LIBS` will be used to pick between STATIC and SHARED.
+Bạn có thể chọn loại thư viện, STATIC, SHARED, hoặc MODULE. Nếu bạn bỏ qua lựa chọn này, giá trị của `BUILD_SHARED_LIBS` sẽ được sử dụng để chọn giữa STATIC và SHARED.
 
-As you'll see in the following sections, often you'll need to make a fictional target, that is, one where nothing needs to be compiled, for example, for a header-only library. That is called an INTERFACE library, and is another choice; the only difference is it cannot be followed by filenames.
+Như bạn sẽ thấy trong các phần tiếp theo, thường bạn sẽ cần tạo một mục tiêu giả, tức là một mục tiêu không cần biên dịch gì cả, ví dụ như cho một thư viện chỉ có tiêu đề. Đó được gọi là thư viện INTERFACE, và là một lựa chọn khác; điểm khác biệt duy nhất là nó không thể đi kèm với tên tệp.
 
-You can also make an `ALIAS` library with an existing library, which simply gives you a new name for a target. The one benefit to this is that you can make libraries with `::` in the name (which you'll see later). [^3]
+Bạn cũng có thể tạo một thư viện `ALIAS` với một thư viện hiện có, đơn giản chỉ là cung cấp cho bạn một tên mới cho một mục tiêu. Lợi ích duy nhất của việc này là bạn có thể tạo các thư viện với `::` trong tên (như bạn sẽ thấy sau). [^3]
 
-## Targets are your friend
+## Mục tiêu là bạn của bạn
 
-Now we've specified a target, how do we add information about it? For example, maybe it needs an include directory:
+Bây giờ chúng ta đã chỉ định một mục tiêu, làm thế nào để thêm thông tin về nó? Ví dụ, có thể nó cần một thư mục include:
 
 ```cmake
 target_include_directories(one PUBLIC include)
 ```
+{{ command.format('target_include_directories') }} thêm một thư mục include vào mục tiêu. `PUBLIC` không có nhiều ý nghĩa đối với một tệp thực thi; đối với một thư viện, nó cho CMake biết rằng bất kỳ mục tiêu nào liên kết với mục tiêu này cũng cần thư mục include đó. Các tùy chọn khác là `PRIVATE` (chỉ ảnh hưởng đến mục tiêu hiện tại, không ảnh hưởng đến các phụ thuộc), và `INTERFACE` (chỉ cần cho các phụ thuộc).
 
-{{ command.format('target_include_directories') }} adds an include directory to a target. `PUBLIC` doesn't mean much for an executable; for a library it lets CMake know that any targets that link to this target must also need that include directory. Other options are `PRIVATE` (only affect the current target, not dependencies), and `INTERFACE` (only needed for dependencies).
+Chúng ta có thể liên kết các mục tiêu với nhau:
 
-We can then chain targets:
 
 ```cmake
 add_library(another STATIC another.cpp another.h)
 target_link_libraries(another PUBLIC one)
 ```
+{{ command.format('target_link_libraries') }} có lẽ là lệnh hữu ích và gây nhầm lẫn nhất trong CMake. Nó nhận một mục tiêu (`another`) và thêm một phụ thuộc nếu một mục tiêu được cung cấp. Nếu không có mục tiêu nào tên (`one`) tồn tại, thì nó sẽ thêm một liên kết đến một thư viện có tên `one` trên đường dẫn của bạn (do đó có tên của lệnh này). Hoặc bạn có thể cung cấp cho nó một đường dẫn đầy đủ đến một thư viện. Hoặc một cờ liên kết. Để thêm một chút nhầm lẫn cuối cùng, CMake cổ điển cho phép bạn bỏ qua việc chọn từ khóa `PUBLIC`, v.v. Nếu điều này được thực hiện trên một mục tiêu, bạn sẽ gặp lỗi nếu cố gắng trộn các kiểu sau này trong chuỗi.
 
-{{ command.format('target_link_libraries') }} is probably the most useful and confusing command in CMake. It takes a target (`another`) and adds a dependency if a target is given. If no target of that name (`one`) exists, then it adds a link to a library called `one` on your path (hence the name of the command). Or you can give it a full path to a library. Or a linker flag. Just to add a final bit of confusion, classic CMake allowed you to skip the keyword selection of `PUBLIC`, etc. If this was done on a target, you'll get an error if you try to mix styles further down the chain.
+Hãy tập trung vào việc sử dụng mục tiêu ở mọi nơi, và từ khóa ở mọi nơi, và bạn sẽ ổn thôi.
 
-Focus on using targets everywhere, and keywords everywhere, and you'll be fine.
+Các mục tiêu có thể có thư mục include, thư viện liên kết (hoặc mục tiêu liên kết), tùy chọn biên dịch, định nghĩa biên dịch, tính năng biên dịch (xem chương C++11), và nhiều hơn nữa. Như bạn sẽ thấy trong hai chương về dự án bao gồm, bạn có thể thường xuyên nhận được các mục tiêu (và luôn tạo mục tiêu) để đại diện cho tất cả các thư viện bạn sử dụng. Ngay cả những thứ không phải là thư viện thực sự, như OpenMP, cũng có thể được đại diện bằng các mục tiêu. Đây là lý do tại sao CMake hiện đại rất tuyệt vời!
+## Bắt đầu
 
-Targets can have include directories, linked libraries (or linked targets), compile options, compile definitions, compile features (see the C++11 chapter), and more. As you'll see in the two including projects chapters, you can often get targets (and always make targets) to represent all the libraries you use. Even things that are not true libraries, like OpenMP, can be represented with targets. This is why Modern CMake is great!
-
-## Dive in
-
-See if you can follow the following file. It makes a simple C++11 library and a program using it. No dependencies. I'll discuss more C++ standard options later, using the CMake 3.8 system for now.
+Hãy thử xem bạn có thể theo dõi tệp sau đây không. Nó tạo ra một thư viện C++11 đơn giản và một chương trình sử dụng thư viện đó. Không có phụ thuộc nào. Tôi sẽ thảo luận thêm về các tùy chọn tiêu chuẩn C++ sau, hiện tại chúng ta sẽ sử dụng hệ thống CMake 3.8.
 
 ```cmake
 cmake_minimum_required(VERSION 3.15...3.30)
@@ -141,7 +121,6 @@ add_executable(calc apps/calc.cpp)
 target_link_libraries(calc PUBLIC calclib)
 
 ```
-
-[^1]: In this book, I'll mostly avoid showing you the wrong way to do things; you can find plenty of examples of that online. I'll mention alternatives occasionally, but these are not recommended unless they are absolutely necessary; often they are just there to help you read older CMake code.
-[^2]: You will sometimes see `FATAL_ERROR` here, that was needed to support nice failures when running this in CMake <2.6, which should not be a problem anymore.
-[^3]: The `::` syntax was originally intended for `INTERFACE IMPORTED` libraries, which were explicitly supposed to be libraries defined outside the current project. But, because of this, most of the `target_*` commands don't work on `IMPORTED` libraries, making them hard to set up yourself. So don't use the `IMPORTED` keyword for now, and use an `ALIAS` target instead; it will be fine until you start exporting targets. This limitation was fixed in CMake 3.11.
+[^1]: Trong cuốn sách này, tôi sẽ tránh việc chỉ cho bạn cách làm sai; bạn có thể tìm thấy rất nhiều ví dụ về điều đó trên mạng. Thỉnh thoảng tôi sẽ đề cập đến các phương án thay thế, nhưng chúng không được khuyến nghị trừ khi thực sự cần thiết; thường thì chúng chỉ giúp bạn đọc mã CMake cũ hơn.
+[^2]: Đôi khi bạn sẽ thấy `FATAL_ERROR` ở đây, điều này cần thiết để hỗ trợ các lỗi đẹp khi chạy trong CMake <2.6, điều này không còn là vấn đề nữa.
+[^3]: Cú pháp `::` ban đầu được dự định cho các thư viện `INTERFACE IMPORTED`, vốn được cho là các thư viện được định nghĩa bên ngoài dự án hiện tại. Nhưng, vì lý do này, hầu hết các lệnh `target_*` không hoạt động trên các thư viện `IMPORTED`, khiến chúng khó thiết lập. Vì vậy, đừng sử dụng từ khóa `IMPORTED` vào lúc này, hãy sử dụng mục tiêu `ALIAS` thay thế; nó sẽ ổn cho đến khi bạn bắt đầu xuất các mục tiêu. Hạn chế này đã được khắc phục trong CMake 3.11.
