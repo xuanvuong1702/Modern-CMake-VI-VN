@@ -1,57 +1,54 @@
-# Programming in CMake
+# Lập trình trong CMake
 
-## Control flow
+## Luồng điều khiển
 
-CMake has an {{ command.format('if') }} statement, though over the years it has become rather complex. There are a series of all caps keywords you can use inside an if statement, and you can often refer to variables by either directly by name or using the `${}` syntax (the if statement historically predates variable expansion). An example if statement:
+CMake có một câu lệnh {{ command.format('if') }}, mặc dù qua nhiều năm nó đã trở nên khá phức tạp. Có một loạt các từ khóa viết hoa mà bạn có thể sử dụng bên trong một câu lệnh if, và bạn thường có thể tham chiếu đến các biến bằng cách trực tiếp sử dụng tên hoặc cú pháp `${}` (câu lệnh if lịch sử có trước việc mở rộng biến). Một ví dụ về câu lệnh if:
 
 ```cmake
 if(variable)
-    # If variable is `ON`, `YES`, `TRUE`, `Y`, or non zero number
+    # Nếu biến là `ON`, `YES`, `TRUE`, `Y`, hoặc số khác 0
 else()
-    # If variable is `0`, `OFF`, `NO`, `FALSE`, `N`, `IGNORE`, `NOTFOUND`, `""`, or ends in `-NOTFOUND`
+    # Nếu biến là `0`, `OFF`, `NO`, `FALSE`, `N`, `IGNORE`, `NOTFOUND`, `""`, hoặc kết thúc bằng `-NOTFOUND`
 endif()
-# If variable does not expand to one of the above, CMake will expand it then try again
+# Nếu biến không mở rộng thành một trong những giá trị trên, CMake sẽ mở rộng nó rồi thử lại
 ```
 
-Since this can be a little confusing if you explicitly put a variable expansion, like `${variable}`, due to the potential expansion of an expansion, a policy ({{ policy.format('CMP0054') }}) was added in CMake 3.1+ that keeps a quoted expansion from being expanded yet again. So, as long as the minimum version of CMake is 3.1+, you can do:
+Vì điều này có thể hơi khó hiểu nếu bạn rõ ràng đặt một biến mở rộng, như `${variable}`, do khả năng mở rộng của một mở rộng, một chính sách ({{ policy.format('CMP0054') }}) đã được thêm vào trong CMake 3.1+ để giữ cho một mở rộng có dấu ngoặc kép không bị mở rộng lại lần nữa. Vì vậy, miễn là phiên bản tối thiểu của CMake là 3.1+, bạn có thể làm:
 
 ```cmake
 if("${variable}")
-    # True if variable is not false-like
+    # Đúng nếu biến không giống false
 else()
-    # Note that undefined variables would be `""` thus false
+    # Lưu ý rằng các biến không được định nghĩa sẽ là `""` do đó là false
 endif()
 ```
+Có nhiều từ khóa khác nhau, chẳng hạn như:
 
-There are a variety of keywords as well, such as:
-
-- Unary: `NOT`, `TARGET`, `EXISTS` (file), `DEFINED`, etc.
-- Binary: `STREQUAL`, `AND`, `OR`, `MATCHES` (regular expression), `VERSION_LESS`, `VERSION_LESS_EQUAL` (CMake 3.7+), etc.
-- Parentheses can be used to group
+- Đơn nguyên: `NOT`, `TARGET`, `EXISTS` (file), `DEFINED`, v.v.
+- Nhị nguyên: `STREQUAL`, `AND`, `OR`, `MATCHES` (biểu thức chính quy), `VERSION_LESS`, `VERSION_LESS_EQUAL` (CMake 3.7+), v.v.
+- Dấu ngoặc đơn có thể được sử dụng để nhóm
 
 ## {{ cmake.format('generator-expressions') }}
 
-{{ cmake.format('generator-expressions') }} are really powerful, but a bit odd and specialized. Most CMake commands happen at configure time, include the if statements seen above. But what if you need logic to occur at build time or even install time? Generator expressions were added for this purpose.[^1] They are evaluated in target properties.
+{{ cmake.format('generator-expressions') }} rất mạnh mẽ, nhưng hơi lạ và chuyên biệt. Hầu hết các lệnh CMake xảy ra tại thời điểm cấu hình, bao gồm cả các câu lệnh if đã thấy ở trên. Nhưng nếu bạn cần logic xảy ra tại thời điểm build hoặc thậm chí cài đặt thì sao? Biểu thức generator được thêm vào cho mục đích này.[^1] Chúng được đánh giá trong các thuộc tính mục tiêu.
 
-The simplest generator expressions are informational expressions, and are of the form `$<KEYWORD>`; they evaluate to a piece of information relevant for the current configuration. The other form is `$<KEYWORD:value>`, where `KEYWORD` is a keyword that controls the evaluation, and value is the item to evaluate (an informational expression keyword is allowed here, too). If KEYWORD is a generator expression or variable that evaluates to 0 or 1, `value` is substituted
-if 1 and not if 0. You can nest generator expressions, and you can use variables to make reading nested variables bearable. Some
-expressions allow multiple values, separated by commas.[^2]
+Biểu thức generator đơn giản nhất là các biểu thức thông tin, và có dạng `$<KEYWORD>`; chúng đánh giá một mẩu thông tin liên quan đến cấu hình hiện tại. Dạng khác là `$<KEYWORD:value>`, trong đó `KEYWORD` là một từ khóa kiểm soát việc đánh giá, và giá trị là mục cần đánh giá (một từ khóa biểu thức thông tin cũng được phép ở đây). Nếu KEYWORD là một biểu thức generator hoặc biến đánh giá thành 0 hoặc 1, `value` sẽ được thay thế nếu là 1 và không nếu là 0. Bạn có thể lồng các biểu thức generator, và bạn có thể sử dụng biến để làm cho việc đọc các biến lồng nhau dễ chịu hơn. Một số biểu thức cho phép nhiều giá trị, được ngăn cách bằng dấu phẩy.[^2]
 
-If you want to put a compile flag only for the DEBUG configuration, for example, you could do:
+Nếu bạn muốn đặt một cờ biên dịch chỉ cho cấu hình DEBUG, ví dụ, bạn có thể làm:
 
 ```
 target_compile_options(MyTarget PRIVATE "$<$<CONFIG:Debug>:--my-flag>")
 ```
 
-This is a newer, better way to add things than using specialized `*_DEBUG` variables, and generalized to all the things generator expressions support. Note that you should never, never use the configure time value for the current configuration, because multi-configuration generators like IDEs do not have a "current" configuration at configure time, only at build time through generator expressions and custom `*_<CONFIG>` variables.
+Đây là một cách mới hơn, tốt hơn để thêm các thứ so với việc sử dụng các biến `*_DEBUG` chuyên biệt, và tổng quát hóa cho tất cả các thứ mà biểu thức generator hỗ trợ. Lưu ý rằng bạn không bao giờ, không bao giờ nên sử dụng giá trị thời gian cấu hình cho cấu hình hiện tại, vì các generator đa cấu hình như IDE không có "cấu hình hiện tại" tại thời điểm cấu hình, chỉ có tại thời điểm build thông qua biểu thức generator và các biến `*_<CONFIG>` tùy chỉnh.
 
-Other common uses for generator expressions:
+Các cách sử dụng phổ biến khác cho biểu thức generator:
 
-- Limiting an item to a certain language only, such as CXX, to avoid it mixing with something like CUDA, or wrapping it so that it is different depending on target language.
-- Accessing configuration dependent properties, like target file location.
-- Giving a different location for build and install directories.
+- Giới hạn một mục cho một ngôn ngữ nhất định, chẳng hạn như CXX, để tránh nó trộn lẫn với thứ gì đó như CUDA, hoặc bao bọc nó để nó khác nhau tùy thuộc vào ngôn ngữ mục tiêu.
+- Truy cập các thuộc tính phụ thuộc vào cấu hình, như vị trí tệp mục tiêu.
+- Cung cấp một vị trí khác cho các thư mục build và cài đặt.
 
-That last one is very common. You'll see something like this in almost every package that supports installing:
+Điều cuối cùng này rất phổ biến. Bạn sẽ thấy điều gì đó như thế này trong hầu hết mọi gói hỗ trợ cài đặt:
 
 ```cmake
 target_include_directories(
@@ -61,13 +58,11 @@ target_include_directories(
     $<INSTALL_INTERFACE:include>
 )
 ```
+## Macro và Hàm
 
-## Macros and Functions
+Bạn có thể dễ dàng định nghĩa hàm {{ command.format('function') }} hoặc {{ command.format('macro') }} của riêng mình trong CMake. Sự khác biệt duy nhất giữa hàm và macro là phạm vi; macro không có phạm vi. Vì vậy, nếu bạn đặt một biến trong một hàm và muốn nó hiển thị bên ngoài, bạn sẽ cần `PARENT_SCOPE`. Do đó, việc lồng các hàm hơi phức tạp, vì bạn sẽ phải rõ ràng đặt các biến mà bạn muốn hiển thị ra bên ngoài thành `PARENT_SCOPE` trong mỗi hàm. Nhưng, các hàm không "rò rỉ" tất cả các biến của chúng như macro. Đối với các ví dụ sau, tôi sẽ sử dụng hàm.
 
-You can define your own CMake {{ command.format('function') }} or {{ command.format('macro') }} easily. The only difference between a function and a macro is scope; macros don't have one. So, if you set a variable in a function and want it to be visible outside, you'll need `PARENT_SCOPE`. Nesting functions therefore is a bit tricky, since you'll have to explicitly set the variables you want visible to the outside world to `PARENT_SCOPE` in each function. But, functions don't "leak" all their variables like macros do. For the
-following examples, I'll use functions.
-
-An example of a simple function is as follows:
+Một ví dụ về một hàm đơn giản như sau:
 
 ```cmake
 function(SIMPLE REQUIRED_ARG)
@@ -79,19 +74,18 @@ simple(This Foo Bar)
 message("Output: ${This}")
 ```
 
-The output would be:
+Đầu ra sẽ là:
 
 ```
 -- Simple arguments: This, followed by Foo;Bar
 Output: From SIMPLE
 ```
 
-If you want positional arguments, they are listed explicitly, and all other arguments are collected in `ARGN` (`ARGV` holds all arguments, even the ones you list). You have to work around the fact that CMake does not have return values by setting variables. In the example above, you can explicitly give a variable name to set.
+Nếu bạn muốn các đối số vị trí, chúng được liệt kê rõ ràng, và tất cả các đối số khác được thu thập trong `ARGN` (`ARGV` giữ tất cả các đối số, kể cả những cái bạn liệt kê). Bạn phải làm việc xung quanh thực tế rằng CMake không có giá trị trả về bằng cách đặt các biến. Trong ví dụ trên, bạn có thể rõ ràng đưa ra một tên biến để đặt.
 
-## Arguments
+## Đối số
 
-CMake has a named variable system that you've already seen in most of the build in CMake functions. You can use it with the {{ command.format('cmake_parse_arguments') }} function. If you want to support a version of CMake less than 3.5, you'll want to also include the {{ module.format('CMakeParseArguments') }} module, which is where it used to live before becoming a built in command. Here is an example of how to use it:
-
+CMake có một hệ thống biến có tên mà bạn đã thấy trong hầu hết các hàm dựng sẵn trong CMake. Bạn có thể sử dụng nó với hàm {{ command.format('cmake_parse_arguments') }}. Nếu bạn muốn hỗ trợ một phiên bản CMake nhỏ hơn 3.5, bạn cũng sẽ muốn bao gồm module {{ module.format('CMakeParseArguments') }}, nơi mà nó từng tồn tại trước khi trở thành một lệnh dựng sẵn. Dưới đây là một ví dụ về cách sử dụng nó:
 ```cmake
 function(COMPLEX)
     cmake_parse_arguments(
@@ -106,7 +100,7 @@ endfunction()
 complex(SINGLE ONE_VALUE value MULTI_VALUES some other values)
 ```
 
-Inside the function after this call, you'll find:
+Bên trong hàm sau khi gọi, bạn sẽ thấy:
 
 ```
 COMPLEX_PREFIX_SINGLE = TRUE
@@ -116,7 +110,7 @@ COMPLEX_PREFIX_ALSO_ONE_VALUE = <UNDEFINED>
 COMPLEX_PREFIX_MULTI_VALUES = "some;other;values"
 ```
 
-If you look at the official page, you'll see a slightly different method using set to avoid explicitly writing the semicolons in the list; feel free to use the structure you like best. You can mix it with the positional arguments listed above; any remaining arguments (therefore optional positional arguments) are in `COMPLEX_PREFIX_UNPARSED_ARGUMENTS`.
+Nếu bạn nhìn vào trang chính thức, bạn sẽ thấy một phương pháp hơi khác sử dụng set để tránh việc phải viết rõ ràng các dấu chấm phẩy trong danh sách; hãy thoải mái sử dụng cấu trúc mà bạn thích nhất. Bạn có thể kết hợp nó với các đối số vị trí được liệt kê ở trên; bất kỳ đối số còn lại nào (do đó là các đối số vị trí tùy chọn) đều nằm trong `COMPLEX_PREFIX_UNPARSED_ARGUMENTS`.
 
-[^1]: They act as if they are evaluated at build/install time, though actually they are evaluated for each build configuration.
-[^2]: The CMake docs splits expressions into Informational, Logical, and Output.
+[^1]: Chúng hoạt động như thể chúng được đánh giá tại thời điểm build/cài đặt, mặc dù thực tế chúng được đánh giá cho mỗi cấu hình build.
+[^2]: Tài liệu CMake chia các biểu thức thành Thông tin, Logic và Đầu ra.
