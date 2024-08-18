@@ -1,75 +1,71 @@
-# Variables and the Cache
+# Biến và Bộ nhớ đệm
 
-## Local Variables
+## Biến cục bộ
 
-We will cover variables first. A local variable is set like this:
+Chúng ta sẽ bắt đầu với các biến. Một biến cục bộ được thiết lập như sau:
 
 ```CMake
 set(MY_VARIABLE "value")
 ```
 
-The names of variables are usually all caps, and the value follows. You access a variable by using `${}`, such as `${MY_VARIABLE}`.[^1] CMake has the concept of scope; you can access the value of the variable after you set it as long as you are in the same scope. If you leave a function or a file in a sub directory, the variable will no longer be defined. You can set a variable in the scope immediately above your current one with `PARENT_SCOPE` at the end.
+Tên của các biến thường được viết hoa toàn bộ, và giá trị theo sau. Bạn truy cập một biến bằng cách sử dụng `${}`, chẳng hạn `${MY_VARIABLE}`.[^1] CMake có khái niệm về phạm vi; bạn có thể truy cập giá trị của biến sau khi bạn thiết lập nó miễn là bạn đang ở trong cùng một phạm vi. Nếu bạn rời khỏi một hàm hoặc một tệp trong thư mục con, biến sẽ không còn được định nghĩa. Bạn có thể thiết lập một biến trong phạm vi ngay trên phạm vi hiện tại của bạn bằng cách sử dụng `PARENT_SCOPE` ở cuối.
 
-Lists are simply a series of values when you set them:
+Danh sách đơn giản là một chuỗi các giá trị khi bạn thiết lập chúng:
 
 ```cmake
 set(MY_LIST "one" "two")
 ```
 
-which internally become `;` separated values. So this is an identical statement:
+mà nội bộ sẽ trở thành các giá trị được phân tách bằng dấu `;`. Vì vậy, đây là một câu lệnh tương tự:
 
 ```cmake
 set(MY_LIST "one;two")
 ```
+Lệnh `list(` có các tiện ích để làm việc với danh sách, và `separate_arguments` sẽ biến một chuỗi phân tách bằng dấu cách thành một danh sách (tại chỗ). Lưu ý rằng một giá trị không có dấu ngoặc kép trong CMake cũng giống như một giá trị có dấu ngoặc kép nếu không có dấu cách trong đó; điều này cho phép bạn bỏ qua dấu ngoặc kép hầu hết thời gian khi làm việc với giá trị mà bạn biết không thể chứa dấu cách.
 
-The `list(` command has utilities for working with lists, and `separate_arguments` will turn a space separated string into a list (inplace). Note that an unquoted value in CMake is the same as a quoted one if there are no spaces in it; this allows you to skip the quotes most of the time when working with value that you know could not contain spaces.
+Khi một biến được mở rộng bằng cú pháp `${}`, tất cả các quy tắc về dấu cách đều áp dụng. Hãy đặc biệt cẩn thận với các đường dẫn; đường dẫn có thể chứa dấu cách bất cứ lúc nào và luôn nên được đặt trong dấu ngoặc kép khi chúng là một biến (không bao giờ viết `${MY_PATH}`, luôn nên là `"${MY_PATH}"`).
 
-When a variable is expanded using `${}` syntax, all the same rules about spaces apply. Be especially careful with paths; paths may contain a space at any time and should always be quoted when they are a variable (never write `${MY_PATH}`, always should
-be `"${MY_PATH}"`).
+## Biến Cache
 
-## Cache Variables
-
-If you want to set a variable from the command line, CMake offers a variable cache. Some variables are already here, like `CMAKE_BUILD_TYPE`. The syntax for declaring a variable and setting it if it is not already set is:
+Nếu bạn muốn thiết lập một biến từ dòng lệnh, CMake cung cấp một biến cache. Một số biến đã có sẵn ở đây, như `CMAKE_BUILD_TYPE`. Cú pháp để khai báo một biến và thiết lập nó nếu nó chưa được thiết lập là:
 
 ```cmake
 set(MY_CACHE_VARIABLE "VALUE" CACHE STRING "Description")
 ```
 
-This will **not** replace an existing value. This is so that you can set these on the command line and not have them overridden when the CMake file executes. If you want to use these variables as a make-shift global variable, then you can do:
+Điều này sẽ **không** thay thế một giá trị hiện có. Điều này là để bạn có thể thiết lập chúng trên dòng lệnh và không bị ghi đè khi tệp CMake thực thi. Nếu bạn muốn sử dụng các biến này như một biến toàn cục tạm thời, thì bạn có thể làm:
 
 ```cmake
 set(MY_CACHE_VARIABLE "VALUE" CACHE STRING "" FORCE)
 mark_as_advanced(MY_CACHE_VARIABLE)
 ```
 
-The first line will cause the value to be set no matter what, and the second line will keep the variable from showing up in the list of variables if you run `cmake -L ..` or use a GUI. This is so common, you can also use the `INTERNAL` type to do the same thing (though technically it forces the STRING type, this won't affect any CMake code that depends on the variable):
+Dòng đầu tiên sẽ khiến giá trị được thiết lập bất kể điều gì, và dòng thứ hai sẽ giữ biến không xuất hiện trong danh sách các biến nếu bạn chạy `cmake -L ..` hoặc sử dụng GUI. Điều này rất phổ biến, bạn cũng có thể sử dụng kiểu `INTERNAL` để làm điều tương tự (mặc dù về mặt kỹ thuật nó buộc kiểu STRING, điều này sẽ không ảnh hưởng đến bất kỳ mã CMake nào phụ thuộc vào biến):
 
 ```cmake
 set(MY_CACHE_VARIABLE "VALUE" CACHE INTERNAL "")
 ```
-
-Since `BOOL` is such a common variable type, you can set it more succinctly with the shortcut:
+Vì `BOOL` là một kiểu biến rất phổ biến, bạn có thể thiết lập nó ngắn gọn hơn với lệnh tắt:
 
 ```cmake
-option(MY_OPTION "This is settable from the command line" OFF)
+option(MY_OPTION "Có thể thiết lập từ dòng lệnh" OFF)
 ```
 
-For the `BOOL` datatype, there are several different wordings for `ON` and `OFF`.
+Đối với kiểu dữ liệu `BOOL`, có nhiều cách viết khác nhau cho `ON` và `OFF`.
 
-See [cmake-variables] for a listing of known variables in CMake.
+Xem [cmake-variables] để biết danh sách các biến đã biết trong CMake.
 
-## Environment variables
+## Biến môi trường
 
-You can also `set(ENV{variable_name} value)` and get `$ENV{variable_name}` environment variables, though it is generally a very good idea to avoid them.
+Bạn cũng có thể `set(ENV{variable_name} value)` và lấy biến môi trường `$ENV{variable_name}`, mặc dù nói chung nên tránh sử dụng chúng.
 
-## The Cache
+## Bộ nhớ đệm
 
-The cache is actually just a text file, `CMakeCache.txt`, that gets created in the build directory when you run CMake. This is how CMake remembers anything you set, so you don't have to re-list your options every time you rerun CMake.
+Bộ nhớ đệm thực chất chỉ là một tệp văn bản, `CMakeCache.txt`, được tạo ra trong thư mục build khi bạn chạy CMake. Đây là cách CMake ghi nhớ bất kỳ thứ gì bạn đã thiết lập, vì vậy bạn không phải liệt kê lại các tùy chọn của mình mỗi khi bạn chạy lại CMake.
 
-## Properties
+## Thuộc tính
 
-The other way CMake stores information is in properties. This is like a variable, but it is attached to some other item, like a directory or a target. A global property can be a useful uncached global variable. Many target properties are initialized from a matching variable with `CMAKE_` at the front. So setting `CMAKE_CXX_STANDARD`, for example, will mean that all new targets created will have `CXX_STANDARD` set to that when they are created. There are two
-ways to set properties:
+Cách khác mà CMake lưu trữ thông tin là trong các thuộc tính. Đây giống như một biến, nhưng nó được gắn vào một mục khác, như một thư mục hoặc một mục tiêu. Một thuộc tính toàn cục có thể là một biến toàn cục không được lưu trong bộ nhớ đệm. Nhiều thuộc tính mục tiêu được khởi tạo từ một biến tương ứng với `CMAKE_` ở đầu. Vì vậy, thiết lập `CMAKE_CXX_STANDARD`, ví dụ, sẽ có nghĩa là tất cả các mục tiêu mới được tạo sẽ có `CXX_STANDARD` được thiết lập khi chúng được tạo. Có hai cách để thiết lập thuộc tính:
 
 ```cmake
 set_property(TARGET TargetName
@@ -79,16 +75,16 @@ set_target_properties(TargetName PROPERTIES
                       CXX_STANDARD 11)
 ```
 
-The first form is more general, and can set multiple targets/files/tests at once, and has useful options. The second is a shortcut for setting several properties on one target. And you can get properties similarly:
+Hình thức đầu tiên tổng quát hơn, và có thể thiết lập nhiều mục tiêu/tệp/kiểm tra cùng một lúc, và có các tùy chọn hữu ích. Hình thức thứ hai là một lối tắt để thiết lập nhiều thuộc tính trên một mục tiêu. Và bạn có thể lấy thuộc tính tương tự như sau:
 
 ```cmake
 get_property(ResultVariable TARGET TargetName PROPERTY CXX_STANDARD)
 ```
 
-See [cmake-properties] for a listing of all known properties. You can also make your own in some cases.[^2]
+Xem [cmake-properties] để biết danh sách tất cả các thuộc tính đã biết. Bạn cũng có thể tạo thuộc tính của riêng mình trong một số trường hợp.[^2]
 
 [cmake-properties]: https://cmake.org/cmake/help/latest/manual/cmake-properties.7.html
 [cmake-variables]: https://cmake.org/cmake/help/latest/manual/cmake-variables.7.html
 
-[^1]: `if` statements are a bit odd in that they can take the variable with or without the surrounding syntax; this is there for historical reasons: `if` predates the `${}` syntax.
-[^2]: Interface targets, for example, may have limits on custom properties that are allowed.
+[^1]: Các câu lệnh `if` hơi kỳ lạ ở chỗ chúng có thể lấy biến có hoặc không có cú pháp bao quanh; điều này tồn tại vì lý do lịch sử: `if` có trước cú pháp `${}`.
+[^2]: Các mục tiêu giao diện, chẳng hạn, có thể có giới hạn về các thuộc tính tùy chỉnh được phép.
