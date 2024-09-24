@@ -1,10 +1,10 @@
 # Gỡ lỗi mã
 
-Bạn có thể cần gỡ lỗi bản dựng CMake của mình hoặc gỡ lỗi mã C++ của bạn. Cả hai đều được đề cập ở đây.
+Bạn có thể cần gỡ lỗi bản dựng CMake của mình, hoặc gỡ lỗi mã C++ của bạn. Cả hai đều được đề cập ở đây.
 
 ## Gỡ lỗi CMake
 
-Đầu tiên, hãy xem xét các cách để gỡ lỗi CMakeLists hoặc tệp CMake khác.
+Đầu tiên, hãy xem xét các cách để gỡ lỗi tệp CMakeLists.txt hoặc các tệp CMake khác.
 
 ### In biến
 
@@ -14,7 +14,7 @@ Phương pháp in câu lệnh đã được kiểm chứng theo thời gian trô
 message(STATUS "MY_VARIABLE=${MY_VARIABLE}")
 ```
 
-Tuy nhiên, một mô-đun tích hợp sẵn giúp việc này dễ dàng hơn nữa:
+Tuy nhiên, một module tích hợp sẵn giúp việc này dễ dàng hơn nữa:
 
 ```cmake
 include(CMakePrintHelpers)
@@ -32,7 +32,7 @@ cmake_print_properties(
 
 ### Theo dõi quá trình chạy
 
-Bạn đã bao giờ muốn xem chính xác những gì xảy ra trong tệp CMake của mình và khi nào chưa? Tính năng `--trace-source="filename"` rất tuyệt vời. Mọi dòng chạy trong tệp mà bạn cung cấp sẽ được lặp lại trên màn hình khi nó được chạy, cho phép bạn theo dõi chính xác những gì đang xảy ra. Cũng có các tùy chọn liên quan, nhưng chúng có xu hướng làm bạn ngập trong đầu ra.
+Bạn đã bao giờ muốn xem chính xác những gì xảy ra trong tệp CMake của mình và khi nào chưa? Tính năng `--trace-source="filename"` rất tuyệt vời. Mọi dòng chạy trong tệp mà bạn cung cấp sẽ được lặp lại trên màn hình khi nó được chạy, cho phép bạn theo dõi chính xác những gì đang xảy ra. Cũng có các tùy chọn liên quan, nhưng chúng có xu hướng khiến bạn bị quá tải bởi lượng thông tin đầu ra.
 
 Ví dụ:
 
@@ -46,4 +46,4 @@ Nếu bạn thêm `--trace-expand`, các biến sẽ được mở rộng thành
 
 Đối với các trình tạo cấu hình đơn, bạn có thể xây dựng mã của mình bằng `-DCMAKE_BUILD_TYPE=Debug` để nhận các cờ gỡ lỗi. Trong các trình tạo đa cấu hình, như nhiều IDE, bạn có thể chọn cấu hình trong IDE. Có các cờ riêng biệt cho chế độ này (các biến kết thúc bằng `_DEBUG` trái ngược với `_RELEASE`), cũng như giá trị biểu thức trình tạo `CONFIG:Debug` hoặc `CONFIG:Release`.
 
-Sau khi bạn tạo bản dựng gỡ lỗi, bạn có thể chạy trình gỡ lỗi, chẳng hạn như gdb hoặc lldb trên đó.
+Sau khi bạn tạo bản dựng gỡ lỗi, bạn có thể chạy trình gỡ lỗi, chẳng hạn như GDB hoặc LLDB trên đó.

@@ -1,10 +1,10 @@
 # Thêm các tính năng
 
-Có rất nhiều cài đặt trình biên dịch và trình liên kết. Khi bạn cần thêm một cái gì đó đặc biệt, trước tiên bạn có thể kiểm tra xem CMake có hỗ trợ nó không; nếu có, bạn có thể tránh việc tự ràng buộc mình với một phiên bản trình biên dịch một cách rõ ràng. Và, tốt hơn nữa, bạn giải thích ý nghĩa của mình trong CMakeLists, thay vì đưa ra các cờ.
+Có rất nhiều cài đặt trình biên dịch và trình liên kết. Khi bạn cần thêm một cái gì đó đặc biệt, trước tiên bạn có thể kiểm tra xem CMake có hỗ trợ nó không; nếu có, bạn có thể tránh việc tự ràng buộc mình với một phiên bản trình biên dịch một cách rõ ràng. Và, tốt hơn nữa, bạn giải thích ý nghĩa của mình trong CMakeLists, thay vì đưa ra các cờ (flag).
 
 Tính năng đầu tiên và phổ biến nhất là hỗ trợ các tiêu chuẩn C++, đã có một chương riêng.
 
-## Mã độc lập vị trí
+## Mã độc lập vị trí (Position independent code)
 
 [Điều này](https://cmake.org/cmake/help/latest/variable/CMAKE_POSITION_INDEPENDENT_CODE.html) được biết đến nhiều nhất là cờ `-fPIC`. Phần lớn thời gian, bạn không cần phải làm gì cả. CMake sẽ bao gồm cờ cho các thư viện `SHARED` hoặc `MODULE`. Nếu bạn thực sự cần nó một cách rõ ràng:
 
@@ -33,11 +33,11 @@ if(MATH_LIBRARY)
 endif()
 ```
 
-Bạn có thể dễ dàng tìm thấy `Find*.cmake` cho thư viện này và các thư viện khác mà bạn cần bằng cách tìm kiếm nhanh; hầu hết các gói chính đều có thư viện trợ giúp của các mô-đun CMake. Xem chương về bao gồm gói hiện có để biết thêm.
+Bạn có thể dễ dàng tìm thấy các tệp `Find*.cmake` cho thư viện này và các thư viện khác mà bạn cần bằng cách tìm kiếm nhanh; hầu hết các gói chính đều có thư viện trợ giúp của các mô-đun CMake. Xem chương về bao gồm gói hiện có để biết thêm.
 
-## Tối ưu hóa liên thủ tục
+## Tối ưu hóa liên thủ tục (Interprocedural Optimization)
 
-{{ prop.format('tgt', 'INTERPROCEDURAL_OPTIMIZATION') }}, được biết đến nhiều nhất là _tối ưu hóa thời gian liên kết_ và cờ `-flto`, có sẵn trên các phiên bản CMake rất gần đây. Bạn có thể bật tính năng này bằng {{ variable.format('CMAKE_INTERPROCEDURAL_OPTIMIZATION') }} (chỉ CMake 3.9+) hoặc thuộc tính {{ prop.format('tgt', 'INTERPROCEDURAL_OPTIMIZATION') }} trên các mục tiêu. Hỗ trợ cho GCC và Clang đã được thêm vào CMake 3.8. Nếu bạn đặt `cmake_minimum_required(VERSION 3.9)` hoặc tốt hơn (xem {{ policy.format('CMP0069') }}, đặt giá trị này thành `ON` trên một mục tiêu là một lỗi nếu trình biên dịch không hỗ trợ nó. Bạn có thể sử dụng check_ipo_supported(), từ mô-đun {{ module.format('CheckIPOSupported') }} tích hợp sẵn, để xem liệu có hỗ trợ hay không trước khi thực hiện. Ví dụ về cách sử dụng kiểu 3.9:
+`INTERPROCEDURAL_OPTIMIZATION`, được biết đến nhiều nhất là _tối ưu hóa thời gian liên kết_ (Link-Time Optimization - LTO) và cờ `-flto`, có sẵn trên các phiên bản CMake rất gần đây. Bạn có thể bật tính năng này bằng `CMAKE_INTERPROCEDURAL_OPTIMIZATION` (chỉ CMake 3.9+) hoặc thuộc tính `INTERPROCEDURAL_OPTIMIZATION` trên các mục tiêu. Hỗ trợ cho GCC và Clang đã được thêm vào CMake 3.8. Nếu bạn đặt `cmake_minimum_required(VERSION 3.9)` hoặc cao hơn (xem `CMP0069`), đặt giá trị này thành `ON` trên một mục tiêu sẽ là một lỗi nếu trình biên dịch không hỗ trợ nó. Bạn có thể sử dụng `check_ipo_supported()`, từ mô-đun `CheckIPOSupported` tích hợp sẵn, để xem liệu có hỗ trợ hay không trước khi thực hiện. Ví dụ về cách sử dụng kiểu 3.9:
 
 ```cmake
 include(CheckIPOSupported)

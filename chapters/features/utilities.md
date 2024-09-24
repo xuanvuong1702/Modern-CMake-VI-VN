@@ -2,7 +2,7 @@
 
 Qua các phiên bản, các tiện ích phổ biến giúp bạn viết mã tốt đã được hỗ trợ thêm vào CMake. Điều này thường ở dạng một thuộc tính và biến khởi tạo `CMAKE_*` phù hợp. Tính năng này không có nghĩa là bị ràng buộc với một chương trình đặc biệt nào đó, mà là bất kỳ chương trình nào có hành vi tương tự.
 
-Tất cả những điều này đều nhận các giá trị được phân tách bằng `;` (một danh sách tiêu chuẩn trong CMake) mô tả chương trình và các tùy chọn mà bạn nên chạy trên các tệp nguồn của mục tiêu này.
+Tất cả những điều này đều nhận các giá trị được phân tách bằng dấu chấm phẩy (một danh sách tiêu chuẩn trong CMake) mô tả chương trình và các tùy chọn mà bạn nên chạy trên các tệp nguồn của mục tiêu này.
 
 ## CCache
 
@@ -36,16 +36,16 @@ Dưới đây là một ví dụ đơn giản về việc sử dụng Clang-Tidy
 ~/package # cmake --build build -j 1
 ```
 
-Phần `-fix` là tùy chọn và sẽ sửa đổi các tệp nguồn của bạn để thử sửa lỗi
-cảnh báo gọn gàng được đưa ra. Nếu bạn đang làm việc trong kho lưu trữ git, điều này khá
+Phần `-fix` là tùy chọn và sẽ sửa đổi các tệp nguồn của bạn để thử sửa 
+các cảnh báo do clang-tidy đưa ra. Nếu bạn đang làm việc trong kho lưu trữ git, điều này khá
 an toàn vì bạn có thể thấy những gì đã thay đổi. Tuy nhiên, hãy đảm bảo rằng bạn **không chạy
 bản dựng makefile/ninja của bạn song song**! Điều này sẽ không hoạt động tốt chút nào nếu nó
-cố gắng sửa cùng một tiêu đề hai lần.
+cố gắng sửa cùng một header hai lần.
 
 Nếu bạn muốn sử dụng rõ ràng dạng mục tiêu để đảm bảo rằng bạn chỉ gọi điều này trên
 các mục tiêu cục bộ của mình, bạn có thể đặt một biến (có thể là một cái gì đó giống như
 `DO_CLANG_TIDY`) thay vì biến `CMAKE_CXX_CLANG_TIDY`, sau đó thêm nó vào
-thuộc tính mục tiêu của bạn khi bạn tạo chúng. Bạn có thể tìm thấy clang-tidy trong đường dẫn của bạn
+thuộc tính mục tiêu của bạn khi bạn tạo chúng. Bạn có thể tìm clang-tidy trong đường dẫn của bạn
 như thế này:
 
 ```cmake
@@ -59,8 +59,8 @@ find_program(
 ## Include what you use
 
 Đây là một ví dụ để sử dụng include what you use. Đầu tiên, bạn sẽ cần phải có
-công cụ, chẳng hạn như trong bộ chứa docker hoặc với brew (macOS) với `brew install include-what-you-use`. Sau đó, bạn có thể chuyển điều này vào bản dựng của mình mà không cần
-sửa đổi nguồn:
+công cụ, chẳng hạn như trong container docker hoặc với brew (macOS) với `brew install include-what-you-use`. Sau đó, bạn có thể chuyển điều này vào bản dựng của mình mà không cần
+sửa đổi mã nguồn:
 
 ```bash
 ~/package # cmake -S . -B build-iwyu -DCMAKE_CXX_INCLUDE_WHAT_YOU_USE=include-what-you-use
@@ -81,7 +81,7 @@ Có một thuộc tính mục tiêu boolean, `LINK_WHAT_YOU_USE`, sẽ kiểm tr
 
 ## Clang-format
 
-Thật không may, Clang-format không thực sự tích hợp với CMake. Bạn có thể tạo một mục tiêu tùy chỉnh (Xem [bài đăng này](https://arcanis.me/en/2015/10/17/cppcheck-and-clang-format)), hoặc bạn có thể chạy nó theo cách thủ công. Một dự án thú vị mà tôi chưa thực sự thử nghiệm là [ở đây](https://github.com/kbenzie/git-cmake-format); nó thêm một mục tiêu định dạng và thậm chí đảm bảo rằng bạn không thể cam kết các tệp không được định dạng.
+Thật không may, Clang-format không thực sự tích hợp với CMake. Bạn có thể tạo một mục tiêu tùy chỉnh (Xem [bài đăng này](https://arcanis.me/en/2015/10/17/cppcheck-and-clang-format)), hoặc bạn có thể chạy nó theo cách thủ công. Một dự án thú vị mà tôi chưa thực sự thử nghiệm là [ở đây](https://github.com/kbenzie/git-cmake-format); nó thêm một mục tiêu định dạng và thậm chí đảm bảo rằng bạn không thể commit các tệp không được định dạng.
 
 Hai dòng sau sẽ làm điều đó trong kho lưu trữ git trong bash (giả sử bạn có tệp `.clang-format`):
 
@@ -89,5 +89,4 @@ Hai dòng sau sẽ làm điều đó trong kho lưu trữ git trong bash (giả 
 $ git ls-files -- '*.cpp' '*.h' | xargs clang-format -i -style=file
 $ git diff --exit-code --color
 ```
-
 
