@@ -54,7 +54,7 @@ Nếu vậy, bạn sẽ được hưởng lợi từ một hệ thống build gi
 
 Hệ thống build là một chủ đề nóng. Tất nhiên có rất nhiều lựa chọn. Nhưng ngay cả một hệ thống thực sự tốt, hoặc một hệ thống sử dụng lại cú pháp quen thuộc, cũng không thể so sánh với CMake.
 Tại sao?
-Hỗ trợ.
+
 Mọi IDE đều hỗ trợ CMake (hoặc CMake hỗ trợ IDE đó).
 Có nhiều gói sử dụng CMake hơn bất kỳ hệ thống nào khác.
 Vì vậy, nếu bạn sử dụng một thư viện được thiết kế để đưa vào mã của mình, bạn có một lựa chọn: Tự tạo hệ thống build của riêng mình hoặc sử dụng một trong những hệ thống được cung cấp và điều đó hầu như luôn bao gồm CMake.
