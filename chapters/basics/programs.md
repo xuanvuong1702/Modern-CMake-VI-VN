@@ -1,10 +1,10 @@
-# Running other programs
+# Chạy các chương trình khác
 
-## Running a command at configure time
+## Chạy một lệnh tại thời điểm cấu hình
 
-Running a command at configure time is relatively easy. Use [`execute_process`][execute_process] to run a process and access the results. It is generally a good idea to avoid hard coding a program path into your CMake; you can use `${CMAKE_COMMAND}`, `find_package(Git)`, or `find_program` to get access to a command to run. Use `RESULT_VARIABLE` to check the return code and `OUTPUT_VARIABLE` to get the output.
+Chạy một lệnh tại thời điểm cấu hình tương đối dễ. Sử dụng [`execute_process`][execute_process] để chạy một tiến trình và truy cập kết quả. Nói chung, nên tránh mã hóa cứng đường dẫn chương trình vào CMake của bạn; bạn có thể sử dụng `${CMAKE_COMMAND}`, `find_package(Git)` hoặc `find_program` để truy cập vào một lệnh để chạy. Sử dụng `RESULT_VARIABLE` để kiểm tra mã trả về và `OUTPUT_VARIABLE` để nhận đầu ra.
 
-Here is an example that updates all git submodules:
+Dưới đây là một ví dụ cập nhật tất cả các mô-đun con git:
 
 ```cmake
 find_package(Git QUIET)
@@ -19,9 +19,9 @@ if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
 endif()
 ```
 
-## Running a command at build time
+## Chạy một lệnh tại thời điểm xây dựng
 
-Build time commands are a bit trickier. The main complication comes from the target system; when do you want your command to run? Does it produce an output that another target needs? With this in mind, here is an example that calls a Python script to generate a header file:
+Các lệnh thời điểm xây dựng phức tạp hơn một chút. Sự phức tạp chính đến từ hệ thống đích; khi nào bạn muốn lệnh của mình chạy? Nó có tạo ra đầu ra mà mục tiêu khác cần không? Với ý nghĩ đó, đây là một ví dụ gọi một tập lệnh Python để tạo tệp tiêu đề:
 
 ```cmake
 find_package(PythonInterp REQUIRED)
@@ -35,10 +35,10 @@ add_custom_target(generate_header ALL
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/Generated.hpp DESTINATION include)
 ```
 
-Here, the generation happens after `some_target` is complete, and happens when you run make without a target (`ALL`). If you make this a dependency of another target with `add_dependencies`, you could avoid the `ALL` keyword. Or, you could require that a user explicitly builds the `generate_header` target when making.
+Ở đây, việc tạo xảy ra sau khi `some_target` hoàn thành và xảy ra khi bạn chạy make mà không có mục tiêu (`ALL`). Nếu bạn biến điều này thành phần phụ thuộc của một mục tiêu khác với `add_dependencies`, bạn có thể tránh từ khóa `ALL`. Hoặc, bạn có thể yêu cầu người dùng tạo rõ ràng mục tiêu `generate_header` khi tạo.
 
-## Included common utilities
+## Các tiện ích phổ biến được bao gồm
 
-A useful tool in writing CMake builds that work cross-platform is `cmake -E <mode>` (seen in CMake files as `${CMAKE_COMMAND} -E`). This mode allows CMake to do a variety of things without calling system tools explicitly, like `copy`, `make_directory`, and `remove`. It is mostly used for the build time commands. Note that the very useful `create_symlink` mode used to be Unix only, but was added for Windows in CMake 3.13. [See the docs](https://cmake.org/cmake/help/latest/manual/cmake.1.html#command-line-tool-mode).
+Một công cụ hữu ích trong việc viết các bản dựng CMake hoạt động đa nền tảng là `cmake -E <mode>` (được thấy trong các tệp CMake dưới dạng `${CMAKE_COMMAND} -E`). Chế độ này cho phép CMake thực hiện nhiều việc khác nhau mà không cần gọi rõ ràng các công cụ hệ thống, như `copy`, `make_directory` và `remove`. Nó chủ yếu được sử dụng cho các lệnh thời điểm xây dựng. Lưu ý rằng chế độ `create_symlink` rất hữu ích trước đây chỉ dành cho Unix, nhưng đã được thêm vào cho Windows trong CMake 3.13. [Xem tài liệu](https://cmake.org/cmake/help/latest/manual/cmake.1.html#command-line-tool-mode).
 
 [execute_process]: https://cmake.org/cmake/help/latest/command/execute_process.html

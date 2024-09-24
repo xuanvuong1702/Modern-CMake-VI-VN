@@ -1,43 +1,43 @@
-# Minuit2
+## Minuit2
 
-Minuit2 is available in standalone mode, for use in cases where ROOT is either not available or not built with Minuit2 enabled. This will cover recommended usages, as well as some aspects of the design.
+Minuit2 có sẵn ở chế độ độc lập, để sử dụng trong các trường hợp mà ROOT không có sẵn hoặc không được build với Minuit2 được bật. Phần này sẽ đề cập đến các cách sử dụng được khuyến nghị, cũng như một số khía cạnh của thiết kế.
 
-## Usage
+## Cách sử dụng
 
-Minuit2 can be used in any of the standard CMake ways, either from the ROOT source or from a standalone source distribution:
+Minuit2 có thể được sử dụng theo bất kỳ cách CMake tiêu chuẩn nào, từ nguồn ROOT hoặc từ bản phân phối nguồn độc lập:
 
 ```cmake
-# Check for Minuit2 in ROOT if you want
-# and then link to ROOT::Minuit2 instead
+# Kiểm tra Minuit2 trong ROOT nếu bạn muốn
+# và sau đó liên kết đến ROOT::Minuit2 thay thế
 
-add_subdirectory(minuit2) # or root/math/minuit2
-# OR
-find_package(Minuit2 CONFIG) # Either build or install
+add_subdirectory(minuit2) # hoặc root/math/minuit2
+# HOẶC
+find_package(Minuit2 CONFIG) # Hoặc build hoặc cài đặt
 
 target_link_libraries(MyProgram PRIVATE Minuit2::Minuit2)
 ```
 
-## Development
+## Phát triển
 
-Minuit2 is a good example of potential solutions to the problem of integrating a modern (CMake 3.1+) build into an existing framework.
+Minuit2 là một ví dụ điển hình về các giải pháp tiềm năng cho vấn đề tích hợp bản build hiện đại (CMake 3.1+) vào một framework hiện có.
 
-To handle the two different CMake systems, the main `CMakeLists.txt` defines common options, then calls a `Standalone.cmake` file if this is not building as part of ROOT.
+Để xử lý hai hệ thống CMake khác nhau, `CMakeLists.txt` chính định nghĩa các tùy chọn chung, sau đó gọi tệp `Standalone.cmake` nếu đây không phải là bản build như một phần của ROOT.
 
-The hardest part in the ROOT case is that Minuit2 requires files that are outside the `math/minuit2` directory. This was solved by adding a `copy_standalone.cmake` file with a function that takes a filename list and then either returns a list of filenames inplace in the original source, or copies files into the local source and returns a list of the new locations, or returns just the list of new locations if the original source does not exist (standalone).
+Phần khó nhất trong trường hợp ROOT là Minuit2 yêu cầu các tệp nằm ngoài thư mục `math/minuit2`. Điều này đã được giải quyết bằng cách thêm tệp `copy_standalone.cmake` với một hàm nhận danh sách tên tệp và sau đó trả về danh sách tên tệp tại chỗ trong nguồn gốc, hoặc sao chép tệp vào nguồn cục bộ và trả về danh sách các vị trí mới, hoặc chỉ trả về danh sách các vị trí mới nếu nguồn gốc không tồn tại (độc lập).
 
 ```bash
-# Copies files into source directory
+# Sao chép tệp vào thư mục nguồn
 cmake /root/math/minuit2 -Dminuit2-standalone=ON
 
-# Makes .tar.gz from source directory
+# Tạo .tar.gz từ thư mục nguồn
 make package_source
 
-# Optional, clean the source directory
+# Tùy chọn, dọn dẹp thư mục nguồn
 make purge
 ```
 
-This is only intended for developers wanting to produce source packages - a normal user _does not pass this option_ and will not create source copies.
+Điều này chỉ dành cho các nhà phát triển muốn tạo ra các gói nguồn - một người dùng bình thường _không truyền tùy chọn này_ và sẽ không tạo bản sao nguồn.
 
-You can use `make install` or `make package` (binary packages) without adding this `standalone` option, either from inside the ROOT source or from a standalone package.
+Bạn có thể sử dụng `make install` hoặc `make package` (các gói nhị phân) mà không cần thêm tùy chọn `standalone` này, từ bên trong nguồn ROOT hoặc từ một gói độc lập.
 
 [minuit2]: https://root.cern.ch

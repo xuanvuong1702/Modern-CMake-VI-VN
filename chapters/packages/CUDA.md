@@ -1,42 +1,37 @@
-# CUDA
+## CUDA
 
-CUDA support is available in two flavors. The new method, introduced in CMake 3.8 (3.9 for Windows), should be strongly preferred over the old, hacky method - I only mention the old method due to the high chances of an old package somewhere having it. Unlike the older languages, CUDA support has been rapidly evolving, and building CUDA is hard, so I would recommend you _require a very recent version_ of CMake! CMake 3.17 and 3.18 have a lot of improvements directly targeting CUDA.
+Hỗ trợ CUDA có sẵn trong hai dạng. Phương pháp mới, được giới thiệu trong CMake 3.8 (3.9 cho Windows), nên được ưu tiên hơn phương pháp cũ, - Tôi chỉ đề cập đến phương pháp cũ do khả năng cao là một gói cũ ở đâu đó đang sử dụng nó. Không giống như các ngôn ngữ cũ hơn, hỗ trợ CUDA đã phát triển nhanh chóng và việc xây dựng CUDA rất khó, vì vậy tôi khuyên bạn nên _yêu cầu phiên bản CMake rất gần đây_! CMake 3.17 và 3.18 có rất nhiều cải tiến nhắm trực tiếp vào CUDA.
 
-A good resource for CUDA and Modern CMake is [this talk](http://on-demand.gputechconf.com/gtc/2017/presentation/S7438-robert-maynard-build-systems-combining-cuda-and-machine-learning.pdf) by CMake developer Robert Maynard at GTC 2017.
+Một nguồn tài nguyên tốt cho CUDA và Modern CMake là [bài nói chuyện này](http://on-demand.gputechconf.com/gtc/2017/presentation/S7438-robert-maynard-build-systems-combining-cuda-and-machine-learning.pdf) của nhà phát triển CMake Robert Maynard tại GTC 2017.
 
-## Adding the CUDA Language
+## Thêm Ngôn ngữ CUDA
 
-There are two ways to enable CUDA support. If CUDA is not optional:
+Có hai cách để bật hỗ trợ CUDA. Nếu CUDA không phải là tùy chọn:
 
 ```cmake
 project(MY_PROJECT LANGUAGES CUDA CXX)
 ```
 
-You'll probably want `CXX` listed here also. And, if CUDA is optional, you'll
-want to put this in somewhere conditionally:
+Bạn có thể cũng muốn `CXX` được liệt kê ở đây. Và, nếu CUDA là tùy chọn, bạn sẽ muốn đặt điều này ở đâu đó có điều kiện:
 
 ```cmake
 enable_language(CUDA)
 ```
 
-To check to see if CUDA is available, use CheckLanuage:
+Để kiểm tra xem CUDA có sẵn hay không, hãy sử dụng CheckLanuage:
 
 ```cmake
 include(CheckLanguage)
 check_language(CUDA)
 ```
 
-You can see if CUDA is present by checking `CMAKE_CUDA_COMPILER` (was missing
-until CMake 3.11).
+Bạn có thể xem CUDA có mặt hay không bằng cách kiểm tra `CMAKE_CUDA_COMPILER` (đã bị thiếu cho đến CMake 3.11).
 
-You can check variables like `CMAKE_CUDA_COMPILER_ID` (for nvcc, this is
-`"NVIDIA"`, Clang was added in CMake 3.18). You can check the version with
-`CMAKE_CUDA_COMPILER_VERSION`.
+Bạn có thể kiểm tra các biến như `CMAKE_CUDA_COMPILER_ID` (đối với nvcc, đây là `"NVIDIA"`, Clang đã được thêm vào trong CMake 3.18). Bạn có thể kiểm tra phiên bản bằng `CMAKE_CUDA_COMPILER_VERSION`.
 
-## Variables for CUDA
+## Biến cho CUDA
 
-Many variables with `CXX` in the name have a CUDA version with `CUDA` instead.
-For example, to set the C++ standard required for CUDA,
+Nhiều biến có `CXX` trong tên có phiên bản CUDA với `CUDA` thay thế. Ví dụ: để đặt tiêu chuẩn C++ cần thiết cho CUDA,
 
 ```
 if(NOT DEFINED CMAKE_CUDA_STANDARD)
@@ -45,44 +40,42 @@ if(NOT DEFINED CMAKE_CUDA_STANDARD)
 endif()
 ```
 
-If you are looking for CUDA's standard level, in CMake 3.17 a new collection of
-compiler features were added, like `cuda_std_11`. These have the same benefits that
-you are already used to from the `cxx` versions.
+Nếu bạn đang tìm kiếm mức tiêu chuẩn của CUDA, trong CMake 3.17, một bộ sưu tập các tính năng trình biên dịch mới đã được thêm vào, như `cuda_std_11`. Những điều này có những lợi ích tương tự mà bạn đã quen thuộc từ các phiên bản `cxx`.
 
-### Adding a library / executable
+### Thêm thư viện / tệp thực thi
 
-This is the easy part; as long as you use `.cu` for CUDA files, you can just add libraries _exactly like you normally would_.
+Đây là phần dễ dàng; miễn là bạn sử dụng `.cu` cho các tệp CUDA, bạn có thể thêm thư viện _chính xác như bình thường_.
 
-You can also use separable compilation:
+Bạn cũng có thể sử dụng biên dịch tách biệt:
 
 ```cmake
 set_target_properties(mylib PROPERTIES
                             CUDA_SEPARABLE_COMPILATION ON)
 ```
 
-You can also directly make a PTX file with the `CUDA_PTX_COMPILATION` property.
+Bạn cũng có thể trực tiếp tạo tệp PTX bằng thuộc tính `CUDA_PTX_COMPILATION`.
 
-### Targeting architectures
+### Nhắm mục tiêu kiến trúc
 
-When you build CUDA code, you generally should be targeting an architecture. If you don't, you compile PTX for the lowest supported architecture, which provide the basic instructions but is compiled at runtime, making it potentially much slower to load.
+Khi bạn xây dựng mã CUDA, bạn thường nên nhắm mục tiêu một kiến trúc. Nếu không, bạn sẽ biên dịch PTX cho kiến trúc được hỗ trợ thấp nhất, cung cấp các hướng dẫn cơ bản nhưng được biên dịch trong thời gian chạy, khiến nó có khả năng tải chậm hơn nhiều.
 
-All cards have an architecture level, like "7.2". You have two choices; the first is the code level; this will report to the code being compiled a version, like "5.0", and it will take advantage of all the features up to 5.0 but not past (assuming well written code / standard libraries). Then there's a target architecture, which must be equal or greater to the code architecture. This needs to have the same major number as your target card, and be equal to or less than the target card. So 7.0 would be a common choice for our 7.2 card. Finally, you can also generate PTX; this will work on all future cards, but will compile just in time.
+Tất cả các card đều có cấp độ kiến trúc, như "7.2". Bạn có hai lựa chọn; đầu tiên là cấp độ mã; điều này sẽ báo cáo cho mã đang được biên dịch một phiên bản, như "5.0", và nó sẽ tận dụng tất cả các tính năng lên đến 5.0 nhưng không quá (giả sử mã được viết tốt / thư viện tiêu chuẩn). Sau đó, có một kiến trúc mục tiêu, phải bằng hoặc lớn hơn kiến trúc mã. Điều này cần phải có cùng số chính với card mục tiêu của bạn và bằng hoặc nhỏ hơn card mục tiêu. Vì vậy, 7.0 sẽ là một lựa chọn phổ biến cho card 7.2 của chúng tôi. Cuối cùng, bạn cũng có thể tạo PTX; điều này sẽ hoạt động trên tất cả các card trong tương lai, nhưng sẽ được biên dịch ngay đúng lúc.
 
-In CMake 3.18, it became very easy to target architectures. If you have a version range that includes 3.18 or newer, you will be using `CMAKE_CUDA_ARCHITECTURES` variable and the `CUDA_ARCHITECTURES` property on targets. You can list values (without the `.`), like 50 for arch 5.0. This will generate for both the real ( SASS ) and virtual architecture ( PTX ). Passing values of '50-real' will only generate for SASS, while passing '50-virtual' will only generate for PTX. If set to OFF, it will not pass architectures.
+Trong CMake 3.18, việc nhắm mục tiêu kiến trúc trở nên rất dễ dàng. Nếu bạn có một phạm vi phiên bản bao gồm 3.18 trở lên, bạn sẽ sử dụng biến `CMAKE_CUDA_ARCHITECTURES` và thuộc tính `CUDA_ARCHITECTURES` trên các target. Bạn có thể liệt kê các giá trị (không có `.`), như 50 cho arch 5.0. Điều này sẽ tạo cho cả kiến trúc thực (SASS) và kiến trúc ảo (PTX). Việc truyền các giá trị của '50-real' sẽ chỉ tạo cho SASS, trong khi việc truyền '50-virtual' sẽ chỉ tạo cho PTX. Nếu được đặt thành OFF, nó sẽ không truyền kiến trúc.
 
-In CMake 3.24, the architectures values have been extended to support user friendly values of 'native', 'all', and 'all-major'.
+Trong CMake 3.24, các giá trị kiến trúc đã được mở rộng để hỗ trợ các giá trị thân thiện với người dùng là 'native', 'all' và 'all-major'.
 
-### Working with targets
+### Làm việc với các target
 
-Using targets should work similarly to CXX, but there's a problem. If you include a target that includes compiler options (flags), most of the time, the options will not be protected by the correct includes (and the chances of them having the correct CUDA wrapper is even smaller). Here's what a correct compiler options line should look like:
+Sử dụng target sẽ hoạt động tương tự như CXX, nhưng có một vấn đề. Nếu bạn bao gồm một target bao gồm các tùy chọn trình biên dịch (cờ), hầu hết thời gian, các tùy chọn sẽ không được bảo vệ bởi các include chính xác (và khả năng chúng có trình bao bọc CUDA chính xác thậm chí còn nhỏ hơn). Đây là dòng tùy chọn trình biên dịch chính xác sẽ trông như thế nào:
 
 ```cmake
 set(opt "$<$<BUILD_INTERFACE:$<COMPILE_LANGUAGE:CXX>>:-fopenmp>$<$<BUILD_INTERFACE:$<COMPILE_LANGUAGE:CUDA>>:-Xcompiler=-fopenmp>")
 ```
 
-However, if you using almost any find_package, and using the Modern CMake methods of targets and inheritance, everything will break. I've learned that the hard way.
+Tuy nhiên, nếu bạn sử dụng gần như bất kỳ find_package nào và sử dụng các phương pháp Modern CMake của target và kế thừa, mọi thứ sẽ bị hỏng. Tôi đã học được điều đó một cách khó khăn.
 
-For now, here's a pretty reasonable solution, _as long as you know the un-aliased target name_. It's a function that will fix a C++ only target by wrapping the flags if using a CUDA compiler:
+Hiện tại, đây là một giải pháp khá hợp lý, _miễn là bạn biết tên target không được đặt bí danh_. Đó là một hàm sẽ sửa một target chỉ C++ bằng cách bao bọc các cờ nếu sử dụng trình biên dịch CUDA:
 
 ```cmake
 function(CUDA_CONVERT_FLAGS EXISTING_TARGET)
@@ -96,12 +89,11 @@ function(CUDA_CONVERT_FLAGS EXISTING_TARGET)
 endfunction()
 ```
 
-### Useful variables
+### Các biến hữu ích
 
-You can use
+Bạn có thể sử dụng
 [`FindCUDAToolkit`](https://cmake.org/cmake/help/git-stage/module/FindCUDAToolkit.html)
-to find a variety of useful targets and variables even without enabling the
-CUDA language.
+để tìm nhiều target và biến hữu ích ngay cả khi không bật ngôn ngữ CUDA.
 
 ```cmake
 cmake_minimum_required(VERSION 3.17)
@@ -112,42 +104,42 @@ add_executable(uses_cublas source.cpp)
 target_link_libraries(uses_cublas PRIVATE CUDA::cublas)
 ```
 
-Variables that using `find_package(CUDAToolkit)` provides:
+Các biến mà việc sử dụng `find_package(CUDAToolkit)` cung cấp:
 
-- `CUDAToolkit_BIN_DIR`: Directory that holds the `nvcc` executable
-- `CUDAToolkit_INCLUDE_DIRS`: Lists of directories containing headers for built-in Thrust, etc
-- `CUDAToolkit_LIBRARY_DIR`: Directory that holds the CUDA runtime library
+- `CUDAToolkit_BIN_DIR`: Thư mục chứa tệp thực thi `nvcc`
+- `CUDAToolkit_INCLUDE_DIRS`: Danh sách các thư mục chứa header cho Thrust tích hợp sẵn, v.v.
+- `CUDAToolkit_LIBRARY_DIR`: Thư mục chứa thư viện thời gian chạy CUDA
 
-Variables that enabling the `CUDA` language provides:
+Các biến mà việc bật ngôn ngữ `CUDA` cung cấp:
 
-- `CMAKE_CUDA_COMPILER`: NVCC with location
-- `CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES`: Place for built-in Thrust, etc
+- `CMAKE_CUDA_COMPILER`: NVCC với vị trí
+- `CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES`: Vị trí cho Thrust tích hợp sẵn, v.v.
 
-> ### Note that FindCUDA is deprecated, but for for versions of CMake < 3.18, the following functions required FindCUDA:
+> ### Lưu ý rằng FindCUDA đã bị phản đối, nhưng đối với các phiên bản CMake < 3.18, các hàm sau yêu cầu FindCUDA:
 >
-> - CUDA version checks / picking a version
-> - Architecture detection (Note: 3.12 fixes this partially)
-> - Linking to CUDA libraries from non-.cu files
+> - Kiểm tra phiên bản CUDA / chọn phiên bản
+> - Phát hiện kiến trúc (Lưu ý: 3.12 khắc phục một phần điều này)
+> - Liên kết đến các thư viện CUDA từ các tệp không phải .cu
 
-## Classic FindCUDA [WARNING: DO NOT USE] (for reference only)
+## FindCUDA cổ điển [CẢNH BÁO: KHÔNG SỬ DỤNG] (chỉ để tham khảo)
 
-If you want to support an older version of CMake, I recommend at least including the FindCUDA from CMake version 3.9 in your cmake folder (see the CLIUtils github organization for a [git repository](https://github.com/CLIUtils/cuda_support)). You'll want two features that were added: `CUDA_LINK_LIBRARIES_KEYWORD` and `cuda_select_nvcc_arch_flags`, along with the newer architectures and CUDA versions.
+Nếu bạn muốn hỗ trợ phiên bản CMake cũ hơn, tôi khuyên bạn nên ít nhất bao gồm FindCUDA từ phiên bản CMake 3.9 trong thư mục cmake của bạn (xem tổ chức github CLIUtils để biết [kho lưu trữ git](https://github.com/CLIUtils/cuda_support)). Bạn sẽ muốn hai tính năng đã được thêm vào: `CUDA_LINK_LIBRARIES_KEYWORD` và `cuda_select_nvcc_arch_flags`, cùng với các kiến trúc và phiên bản CUDA mới hơn.
 
-To use the old CUDA support, you use `find_package`:
+Để sử dụng hỗ trợ CUDA cũ, bạn sử dụng `find_package`:
 
 ```cmake
 find_package(CUDA 7.0 REQUIRED)
 message(STATUS "Found CUDA ${CUDA_VERSION_STRING} at ${CUDA_TOOLKIT_ROOT_DIR}")
 ```
 
-You can control the CUDA flags with `CUDA_NVCC_FLAGS` (list append) and you can control separable compilation with `CUDA_SEPARABLE_COMPILATION`. You'll also want to make sure CUDA plays nice and adds keywords to the targets (CMake 3.9+):
+Bạn có thể kiểm soát các cờ CUDA bằng `CUDA_NVCC_FLAGS` (danh sách nối thêm) và bạn có thể kiểm soát quá trình biên dịch tách biệt bằng `CUDA_SEPARABLE_COMPILATION`. Bạn cũng sẽ muốn đảm bảo CUDA hoạt động tốt và thêm các từ khóa vào target (CMake 3.9+):
 
 ```cmake
 set(CUDA_LINK_LIBRARIES_KEYWORD PUBLIC)
 ```
 
-You'll also might want to allow a user to check for the arch flags of their current hardware:
+Bạn cũng có thể muốn cho phép người dùng kiểm tra các cờ arch của phần cứng hiện tại của họ:
 
 ```cmake
-cuda_select_nvcc_arch_flags(ARCH_FLAGS) # optional argument for arch to add
+cuda_select_nvcc_arch_flags(ARCH_FLAGS) # đối số tùy chọn cho arch để thêm
 ```

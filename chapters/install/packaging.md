@@ -1,11 +1,11 @@
-# Packaging
+# Đóng gói
 
-There are two ways to instruct CMake to build your package; one is to use a CPackConfig.cmake file, and the other is to integrate the CPack variables into your CMakeLists.txt file. Since you want variables from your main build to be included, like version number, you'll want to make a configure file if you go that route. I'll show you the integrated version:
+Có hai cách để hướng dẫn CMake xây dựng gói của bạn; một là sử dụng tệp CPackConfig.cmake và cách khác là tích hợp các biến CPack vào tệp CMakeLists.txt của bạn. Vì bạn muốn các biến từ bản dựng chính của mình được bao gồm, chẳng hạn như số phiên bản, bạn sẽ muốn tạo một tệp cấu hình nếu bạn đi theo con đường đó. Tôi sẽ chỉ cho bạn phiên bản tích hợp:
 
 ```cmake
-# Packaging support
-set(CPACK_PACKAGE_VENDOR "Vendor name")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Some summary")
+# Hỗ trợ đóng gói
+set(CPACK_PACKAGE_VENDOR "Tên nhà cung cấp")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Tóm tắt nào đó")
 set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
 set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
 set(CPACK_PACKAGE_VERSION_PATCH ${PROJECT_VERSION_PATCH})
@@ -13,9 +13,9 @@ set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
 set(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
 ```
 
-These are the most common variables you'll need to make a binary package. A binary package uses the install mechanism of CMake, so anything that is installed will be present.
+Đây là những biến phổ biến nhất mà bạn sẽ cần để tạo một gói nhị phân. Một gói nhị phân sử dụng cơ chế cài đặt của CMake, vì vậy bất cứ thứ gì được cài đặt sẽ có mặt.
 
-You can also make a source package. You should set `CPACK_SOURCE_IGNORE_FILES` to regular expressions that ensure you don't pick up any extra files (like the build directory or git details); otherwise `make package_source` will bundle up literally everything in the source directory. You can also set the source generator to make your favorite types of files for source packages:
+Bạn cũng có thể tạo một gói nguồn. Bạn nên đặt `CPACK_SOURCE_IGNORE_FILES` thành các biểu thức chính quy đảm bảo rằng bạn không chọn bất kỳ tệp bổ sung nào (như thư mục bản dựng hoặc chi tiết git); nếu không, `make package_source` sẽ gói gọn tất cả mọi thứ trong thư mục nguồn. Bạn cũng có thể đặt trình tạo nguồn để tạo các loại tệp yêu thích của mình cho các gói nguồn:
 
 ```cmake
 set(CPACK_SOURCE_GENERATOR "TGZ;ZIP")
@@ -27,9 +27,9 @@ set(CPACK_SOURCE_IGNORE_FILES
 )
 ```
 
-Note that this will not work on Windows, but the generated source packages work on Windows.
+Lưu ý rằng điều này sẽ không hoạt động trên Windows, nhưng các gói nguồn được tạo hoạt động trên Windows.
 
-Finally, you need to include the CPack module:
+Cuối cùng, bạn cần bao gồm mô-đun CPack:
 
 ```cmake
 include(CPack)

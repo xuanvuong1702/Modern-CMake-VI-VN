@@ -1,10 +1,10 @@
-# Communication with your code
+## Giao tiếp với mã của bạn
 
-## Configure File
+## Tệp Cấu hình
 
-CMake allows you to access CMake variables from your code using `configure_file`. This command copies a file (traditionally ending in `.in`) from one place to another, substituting all CMake variables it finds. If you want to avoid replacing existing `${}` syntax in your input file, use the `@ONLY` keyword. There's also a `COPY_ONLY` keyword if you are just using this as a replacement for `file(COPY`.
+CMake cho phép bạn truy cập các biến CMake từ mã của mình bằng cách sử dụng `configure_file`. Lệnh này sao chép một tệp (thường kết thúc bằng `.in`) từ nơi này sang nơi khác, thay thế tất cả các biến CMake mà nó tìm thấy. Nếu bạn muốn tránh thay thế cú pháp `${}` hiện có trong tệp đầu vào, hãy sử dụng từ khóa `@ONLY`. Ngoài ra còn có một từ khóa `COPY_ONLY` nếu bạn chỉ sử dụng nó như một sự thay thế cho `file(COPY)`.
 
-This functionality is used quite frequently; for example, on `Version.h.in`:
+Chức năng này được sử dụng khá thường xuyên; ví dụ, trên `Version.h.in`:
 
 ### Version.h.in
 
@@ -18,7 +18,7 @@ This functionality is used quite frequently; for example, on `Version.h.in`:
 #define MY_VERSION "@PROJECT_VERSION@"
 ```
 
-### CMake lines:
+### Dòng CMake:
 
 ```cmake
 configure_file (
@@ -27,28 +27,28 @@ configure_file (
 )
 ```
 
-You should include the binary include directory as well when building your project. If you want to put any true/false variables in a header, CMake has C specific `#cmakedefine` and `#cmakedefine01` replacements to make appropriate define lines.
+Bạn nên bao gồm thư mục include nhị phân khi xây dựng dự án của mình. Nếu bạn muốn đặt bất kỳ biến đúng/sai nào trong tiêu đề, CMake có các thay thế `#cmakedefine` và `#cmakedefine01` dành riêng cho C để tạo các dòng định nghĩa phù hợp.
 
-You can also (and often do) use this to produce `.cmake` files, such as the configure files (see [installing](https://cliutils.gitlab.io/modern-cmake/chapters/install/installing.html)).
+Bạn cũng có thể (và thường làm) sử dụng điều này để tạo ra các tệp `.cmake`, chẳng hạn như các tệp cấu hình (xem [cài đặt](https://cliutils.gitlab.io/modern-cmake/chapters/install/installing.html)).
 
-## Reading files
+## Đọc tệp
 
-The other direction can be done too; you can read in something (like a version) from your source files. If you have a header only library that you'd like to make available with or without CMake, for example, then this would be the best way to handle a version. This would look something like this:
+Hướng ngược lại cũng có thể được thực hiện; bạn có thể đọc một cái gì đó (như một phiên bản) từ các tệp nguồn của mình. Ví dụ: nếu bạn có một thư viện chỉ dành cho tiêu đề mà bạn muốn cung cấp có hoặc không có CMake, thì đây sẽ là cách tốt nhất để xử lý một phiên bản. Điều này sẽ trông giống như sau:
 
 ```cmake
-# Assuming the canonical version is listed in a single line
-# This would be in several parts if picking up from MAJOR, MINOR, etc.
+# Giả sử phiên bản chính thức được liệt kê trong một dòng duy nhất
+# Điều này sẽ có nhiều phần nếu chọn từ MAJOR, MINOR, v.v.
 set(VERSION_REGEX "#define MY_VERSION[ \t]+\"(.+)\"")
 
-# Read in the line containing the version
+# Đọc dòng chứa phiên bản
 file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/include/My/Version.hpp"
     VERSION_STRING REGEX ${VERSION_REGEX})
 
-# Pick out just the version
+# Chọn ra chỉ phiên bản
 string(REGEX REPLACE ${VERSION_REGEX} "\\1" VERSION_STRING "${VERSION_STRING}")
 
-# Automatically getting PROJECT_VERSION_MAJOR, My_VERSION_MAJOR, etc.
+# Tự động nhận PROJECT_VERSION_MAJOR, My_VERSION_MAJOR, v.v.
 project(My LANGUAGES CXX VERSION ${VERSION_STRING})
 ```
 
-Above, `file(STRINGS file_name variable_name REGEX regex)` picks lines that match a regex; and the same regex is used to then pick out the parentheses capture group with the version part. Replace is used with back substitution to output only that one group.
+Ở trên, `file(STRINGS file_name variable_name REGEX regex)` chọn các dòng khớp với một regex; và cùng một regex được sử dụng để sau đó chọn ra nhóm chụp dấu ngoặc đơn với phần phiên bản. Replace được sử dụng với thay thế ngược để chỉ xuất ra nhóm đó. 

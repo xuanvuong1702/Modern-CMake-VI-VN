@@ -1,30 +1,30 @@
-# Adding Features
+# Thêm các tính năng
 
-There are lots of compiler and linker settings. When you need to add something special, you could check first to see if CMake supports it; if it does, you can avoid explicitly tying yourself to a compiler version. And, better yet, you explain what you mean in your CMakeLists, rather than spewing flags.
+Có rất nhiều cài đặt trình biên dịch và trình liên kết. Khi bạn cần thêm một cái gì đó đặc biệt, trước tiên bạn có thể kiểm tra xem CMake có hỗ trợ nó không; nếu có, bạn có thể tránh việc tự ràng buộc mình với một phiên bản trình biên dịch một cách rõ ràng. Và, tốt hơn nữa, bạn giải thích ý nghĩa của mình trong CMakeLists, thay vì đưa ra các cờ.
 
-The first and most common feature was C++ standards support, which got it's own chapter.
+Tính năng đầu tiên và phổ biến nhất là hỗ trợ các tiêu chuẩn C++, đã có một chương riêng.
 
-## Position independent code
+## Mã độc lập vị trí
 
-[This](https://cmake.org/cmake/help/latest/variable/CMAKE_POSITION_INDEPENDENT_CODE.html) is best known as the `-fPIC` flag. Much of the time, you don't need to do anything. CMake will include the flag for `SHARED` or `MODULE` libraries. If you do explicitly need it:
+[Điều này](https://cmake.org/cmake/help/latest/variable/CMAKE_POSITION_INDEPENDENT_CODE.html) được biết đến nhiều nhất là cờ `-fPIC`. Phần lớn thời gian, bạn không cần phải làm gì cả. CMake sẽ bao gồm cờ cho các thư viện `SHARED` hoặc `MODULE`. Nếu bạn thực sự cần nó một cách rõ ràng:
 
 ```cmake
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 ```
 
-will do it globally, or:
+sẽ thực hiện nó trên toàn cầu, hoặc:
 
 ```cmake
 set_target_properties(lib1 PROPERTIES POSITION_INDEPENDENT_CODE ON)
 ```
 
-to explicitly turn it `ON` (or `OFF`) for a target.
+để bật nó một cách rõ ràng `ON` (hoặc `OFF`) cho một mục tiêu.
 
-## Little libraries
+## Các thư viện nhỏ
 
-If you need to link to the `dl` library, with `-ldl` on Linux, just use the built-in CMake variable [`${CMAKE_DL_LIBS}`](https://cmake.org/cmake/help/latest/variable/CMAKE_DL_LIBS.html) in a `target_link_libraries` command. No module or `find_package` needed. (This adds whatever is needed to get `dlopen` and `dlclose`)
+Nếu bạn cần liên kết đến thư viện `dl`, với `-ldl` trên Linux, chỉ cần sử dụng biến CMake tích hợp sẵn [`${CMAKE_DL_LIBS}`](https://cmake.org/cmake/help/latest/variable/CMAKE_DL_LIBS.html) trong lệnh `target_link_libraries`. Không cần mô-đun hoặc `find_package`. (Điều này thêm bất cứ thứ gì cần thiết để lấy `dlopen` và `dlclose`)
 
-Unfortunately, the math library is not so lucky. If you need to explicitly link to it, you can always do `target_link_libraries(MyTarget PUBLIC m)`, but it might be better to use CMake's generic [`find_library`](https://cmake.org/cmake/help/latest/command/find_library.html):
+Thật không may, thư viện toán học không được may mắn như vậy. Nếu bạn cần liên kết rõ ràng với nó, bạn luôn có thể làm `target_link_libraries(MyTarget PUBLIC m)`, nhưng có thể tốt hơn nếu sử dụng [`find_library`](https://cmake.org/cmake/help/latest/command/find_library.html) chung của CMake:
 
 ```cmake
 find_library(MATH_LIBRARY m)
@@ -33,11 +33,11 @@ if(MATH_LIBRARY)
 endif()
 ```
 
-You can pretty easily find `Find*.cmake`'s for this and other libraries that you need with a quick search; most major packages have a helper library of CMake modules. See the chapter on existing package inclusion for more.
+Bạn có thể dễ dàng tìm thấy `Find*.cmake` cho thư viện này và các thư viện khác mà bạn cần bằng cách tìm kiếm nhanh; hầu hết các gói chính đều có thư viện trợ giúp của các mô-đun CMake. Xem chương về bao gồm gói hiện có để biết thêm.
 
-## Interprocedural optimization
+## Tối ưu hóa liên thủ tục
 
-{{ prop.format('tgt', 'INTERPROCEDURAL_OPTIMIZATION') }}, best known as _link time optimization_ and the `-flto` flag, is available on very recent versions of CMake. You can turn this on with {{ variable.format('CMAKE_INTERPROCEDURAL_OPTIMIZATION') }} (CMake 3.9+ only) or the {{ prop.format('tgt', 'INTERPROCEDURAL_OPTIMIZATION') }} property on targets. Support for GCC and Clang was added in CMake 3.8. If you set `cmake_minimum_required(VERSION 3.9)` or better (see {{ policy.format('CMP0069') }}, setting this to `ON` on a target is an error if the compiler doesn't support it. You can use check_ipo_supported(), from the built-in {{ module.format('CheckIPOSupported') }} module, to see if support is available before hand. An example of 3.9 style usage:
+{{ prop.format('tgt', 'INTERPROCEDURAL_OPTIMIZATION') }}, được biết đến nhiều nhất là _tối ưu hóa thời gian liên kết_ và cờ `-flto`, có sẵn trên các phiên bản CMake rất gần đây. Bạn có thể bật tính năng này bằng {{ variable.format('CMAKE_INTERPROCEDURAL_OPTIMIZATION') }} (chỉ CMake 3.9+) hoặc thuộc tính {{ prop.format('tgt', 'INTERPROCEDURAL_OPTIMIZATION') }} trên các mục tiêu. Hỗ trợ cho GCC và Clang đã được thêm vào CMake 3.8. Nếu bạn đặt `cmake_minimum_required(VERSION 3.9)` hoặc tốt hơn (xem {{ policy.format('CMP0069') }}, đặt giá trị này thành `ON` trên một mục tiêu là một lỗi nếu trình biên dịch không hỗ trợ nó. Bạn có thể sử dụng check_ipo_supported(), từ mô-đun {{ module.format('CheckIPOSupported') }} tích hợp sẵn, để xem liệu có hỗ trợ hay không trước khi thực hiện. Ví dụ về cách sử dụng kiểu 3.9:
 
 ```cmake
 include(CheckIPOSupported)

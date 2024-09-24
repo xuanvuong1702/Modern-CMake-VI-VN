@@ -1,8 +1,8 @@
-# Testing
+# Kiểm thử
 
-## General Testing Information
+## Thông tin kiểm thử chung
 
-In your main CMakeLists.txt you need to add the following function call (not in a subfolder):
+Trong tệp CMakeLists.txt chính của bạn, bạn cần thêm lệnh gọi hàm sau (không nằm trong thư mục con):
 
 ```cmake
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
@@ -10,9 +10,9 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 endif()
 ```
 
-Which will enable testing and set a `BUILD_TESTING` option so users can turn testing on and off (along with [a few other things](https://gitlab.kitware.com/cmake/cmake/blob/master/Modules/CTest.cmake)). Or you can do this yourself by directly calling `enable_testing()`.
+Điều này sẽ bật kiểm thử và đặt tùy chọn `BUILD_TESTING` để người dùng có thể bật và tắt kiểm thử (cùng với [một số thứ khác](https://gitlab.kitware.com/cmake/cmake/blob/master/Modules/CTest.cmake)). Hoặc bạn có thể tự mình làm điều này bằng cách gọi trực tiếp `enable_testing()`.
 
-When you add your test folder, you should do something like this:
+Khi bạn thêm thư mục kiểm thử của mình, bạn nên làm điều gì đó như thế này:
 
 ```cmake
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME AND BUILD_TESTING)
@@ -20,7 +20,7 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME AND BUILD_TESTING)
 endif()
 ```
 
-The reason for this is that if someone else includes your package, and they use `BUILD_TESTING`, they probably do not want your tests to build. In the rare case that you really do want to enable testing on both packages, you can provide an override:
+Lý do cho điều này là nếu người khác bao gồm gói của bạn và họ sử dụng `BUILD_TESTING`, họ có thể không muốn các kiểm thử của bạn được xây dựng. Trong trường hợp hiếm hoi mà bạn thực sự muốn bật kiểm thử trên cả hai gói, bạn có thể cung cấp một ghi đè:
 
 ```cmake
 if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR MYPROJECT_BUILD_TESTING) AND BUILD_TESTING)
@@ -28,25 +28,25 @@ if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR MYPROJECT_BUILD_TESTING) AND BUI
 endif()
 ```
 
-The main use case for the override above is actually in this book's own examples, as the master CMake project really does want to run all the subproject tests.
+Trường hợp sử dụng chính cho ghi đè ở trên thực sự nằm trong các ví dụ của chính cuốn sách này, vì dự án CMake chính thực sự muốn chạy tất cả các kiểm thử dự án con.
 
-You can register targets with:
+Bạn có thể đăng ký mục tiêu bằng:
 
 ```cmake
 add_test(NAME TestName COMMAND TargetName)
 ```
 
-If you put something else besides a target name after COMMAND, it will register as a command line to run. It would also be valid to put the generator expression:
+Nếu bạn đặt một thứ gì đó ngoài tên mục tiêu sau COMMAND, nó sẽ được đăng ký dưới dạng dòng lệnh để chạy. Việc đặt biểu thức trình tạo cũng sẽ hợp lệ:
 
 ```cmake
 add_test(NAME TestName COMMAND $<TARGET_FILE:${TESTNAME}>)
 ```
 
-which would use the output location (thus, the executable) of the produced target.
+điều này sẽ sử dụng vị trí đầu ra (do đó, tệp thực thi) của mục tiêu được tạo.
 
-## Building as part of a test
+## Xây dựng như một phần của kiểm thử
 
-If you want to run CMake to build a project as part of a test, you can do that too (in fact, this is how CMake tests itself). For example, if your master project was called `MyProject` and you had an `examples/simple` project that could build by itself, this would look like:
+Nếu bạn muốn chạy CMake để xây dựng một dự án như một phần của kiểm thử, bạn cũng có thể làm điều đó (trên thực tế, đây là cách CMake tự kiểm thử). Ví dụ: nếu dự án chính của bạn được gọi là `MyProject` và bạn có một dự án `examples/simple` có thể tự xây dựng, điều này sẽ giống như:
 
 ```cmake
 add_test(
@@ -61,10 +61,12 @@ add_test(
 )
 ```
 
-## Testing Frameworks
+## Khung kiểm thử
 
-Look at the subchapters for recipes for popular frameworks.
+Hãy xem các chương phụ để biết công thức nấu ăn cho các khung phổ biến.
 
-- [GoogleTest](testing/googletest.md): A popular option from Google. Development can be a bit slow.
-- [Catch2](testing/catch.md): A modern, PyTest-like framework with clever macros.
-- [DocTest](https://github.com/onqtam/doctest): A replacement for Catch2 that is supposed to compile much faster and be cleaner. See Catch2 chapter and replace with DocTest.
+- [GoogleTest](testing/googletest.md): Một tùy chọn phổ biến từ Google. Việc phát triển có thể hơi chậm.
+- [Catch2](testing/catch.md): Một khung hiện đại, giống PyTest với các macro thông minh.
+- [DocTest](https://github.com/onqtam/doctest): Một sự thay thế cho Catch2 được cho là biên dịch nhanh hơn nhiều và gọn gàng hơn. Xem chương Catch2 và thay thế bằng DocTest.
+
+

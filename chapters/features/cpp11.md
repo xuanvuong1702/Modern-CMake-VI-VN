@@ -1,37 +1,37 @@
-# C++11 and beyond
+# C++11 trở lên
 
-C++11 is supported by CMake. Really. Just not in CMake 2.8, because, guess what, C++11 didn't exist in 2009 when 2.0 was released. As long as you are using CMake 3.1 or newer, you should be fine, there are two different ways to enable support. And as you'll soon see, there's even better support in CMake 3.8+. I'll start with that, since this is Modern CMake.
+C++11 được CMake hỗ trợ. Thật sự. Chỉ là không phải trong CMake 2.8, bởi vì, đoán xem, C++11 không tồn tại vào năm 2009 khi 2.0 được phát hành. Miễn là bạn đang sử dụng CMake 3.1 trở lên, bạn sẽ ổn thôi, có hai cách khác nhau để bật hỗ trợ. Và như bạn sẽ sớm thấy, có hỗ trợ tốt hơn nữa trong CMake 3.8 trở lên. Tôi sẽ bắt đầu với điều đó, vì đây là CMake hiện đại.
 
-## CMake 3.8+: Meta compiler features
+## CMake 3.8+: Các tính năng meta compiler
 
-As long as you can require that a user install CMake, you'll have access to the newest way to enable C++ standards. This is the most powerful way, with the nicest syntax and the best support for new standards, and the best target behavior for mixing standards and options. Assuming you have a target named `myTarget`, it looks like this:
+Miễn là bạn có thể yêu cầu người dùng cài đặt CMake, bạn sẽ có quyền truy cập vào cách mới nhất để bật các tiêu chuẩn C++. Đây là cách mạnh mẽ nhất, với cú pháp đẹp nhất và hỗ trợ tốt nhất cho các tiêu chuẩn mới, và hành vi mục tiêu tốt nhất để kết hợp các tiêu chuẩn và tùy chọn. Giả sử bạn có một mục tiêu có tên là `myTarget`, nó trông như thế này:
 
 ```cmake
 target_compile_features(myTarget PUBLIC cxx_std_11)
 set_target_properties(myTarget PROPERTIES CXX_EXTENSIONS OFF)
 ```
 
-For the first line, we get to pick between `cxx_std_11`, `cxx_std_14`, and `cxx_std_17`. The second line is optional, but will avoid extensions being added; without it you'd get things like `-std=g++11` replacing `-std=c++11`. The first line even works on `INTERFACE` targets; only actual compiled targets can use the second line.
+Đối với dòng đầu tiên, chúng ta có thể chọn giữa `cxx_std_11`, `cxx_std_14` và `cxx_std_17`. Dòng thứ hai là tùy chọn, nhưng sẽ tránh việc thêm các phần mở rộng; nếu không có nó, bạn sẽ nhận được những thứ như `-std=g++11` thay thế `-std=c++11`. Dòng đầu tiên thậm chí còn hoạt động trên các mục tiêu `INTERFACE`; chỉ các mục tiêu được biên dịch thực tế mới có thể sử dụng dòng thứ hai.
 
-If a target further down the dependency chain specifies a higher C++ level, this interacts nicely. It's really just a more advanced version of the following method, so it interacts nicely with that, too.
+Nếu một mục tiêu ở xa hơn trong chuỗi phụ thuộc chỉ định một cấp C++ cao hơn, điều này sẽ tương tác độc đáo. Nó thực sự chỉ là một phiên bản nâng cao hơn của phương pháp sau đây, vì vậy nó cũng tương tác độc đáo với điều đó.
 
-## CMake 3.1+: Compiler features
+## CMake 3.1+: Các tính năng trình biên dịch
 
-You can ask for specific compiler features to be available. This was more granular than asking for a C++ version, though it's a bit tricky to pick out just the features a package is using unless you wrote the package and have a good memory. Since this ultimately checks against a list of options CMake knows your compiler supports and picks the highest flag indicated in that list, you don't have to specify all the options you need, just the rarest ones. The syntax is identical to the section above, you just have a list of options to pick instead of `cxx_std_*` options. See the [whole list here](https://cmake.org/cmake/help/latest/prop_gbl/CMAKE_CXX_KNOWN_FEATURES.html).
+Bạn có thể yêu cầu các tính năng trình biên dịch cụ thể phải có sẵn. Điều này chi tiết hơn so với việc yêu cầu một phiên bản C++, mặc dù hơi khó để chọn ra các tính năng mà một gói đang sử dụng trừ khi bạn đã viết gói đó và có một trí nhớ tốt. Vì điều này cuối cùng sẽ kiểm tra dựa trên danh sách các tùy chọn mà CMake biết trình biên dịch của bạn hỗ trợ và chọn cờ cao nhất được chỉ định trong danh sách đó, bạn không phải chỉ định tất cả các tùy chọn bạn cần, chỉ cần những tùy chọn hiếm nhất. Cú pháp giống hệt như phần trên, bạn chỉ cần có một danh sách các tùy chọn để chọn thay vì các tùy chọn `cxx_std_*`. Xem [toàn bộ danh sách tại đây](https://cmake.org/cmake/help/latest/prop_gbl/CMAKE_CXX_KNOWN_FEATURES.html).
 
-If you have optional features, you can use the list `CMAKE_CXX_COMPILE_FEATURES` and use `if(... IN_LIST ...)` from CMake 3.3+ to see if that feature is supported, and add it conditionally. See [the docs here](https://cmake.org/cmake/help/latest/manual/cmake-compile-features.7.html) for other use cases.
+Nếu bạn có các tính năng tùy chọn, bạn có thể sử dụng danh sách `CMAKE_CXX_COMPILE_FEATURES` và sử dụng `if(... IN_LIST ...)` từ CMake 3.3+ để xem tính năng đó có được hỗ trợ hay không và thêm nó theo điều kiện. Xem [tài liệu tại đây](https://cmake.org/cmake/help/latest/manual/cmake-compile-features.7.html) để biết các trường hợp sử dụng khác.
 
-## CMake 3.1+: Global and property settings
+## CMake 3.1+: Cài đặt toàn cục và thuộc tính
 
-There is another way that C++ standards are supported; a specific set of three properties (both global and target level). The global properties are:
+Có một cách khác mà các tiêu chuẩn C++ được hỗ trợ; một tập hợp cụ thể gồm ba thuộc tính (cả ở cấp độ toàn cục và mục tiêu). Các thuộc tính toàn cục là:
 
 ```cmake
-set(CMAKE_CXX_STANDARD 11 CACHE STRING "The C++ standard to use")
+set(CMAKE_CXX_STANDARD 11 CACHE STRING "Tiêu chuẩn C++ cần sử dụng")
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 ```
 
-The first line sets a C++ standard level, and the second tells CMake to use it, and the final line is optional and ensures `-std=c++11` vs. something like `-std=g++11`. This method isn't bad for a final package, but shouldn't be used by a library. You should always set this as a cached variable, so you can override it to try a new version easily (or if this gets used as a library, this is the only way to override it - but again, don't use this for libraries). You can also set these values on a target:
+Dòng đầu tiên thiết lập một cấp độ tiêu chuẩn C++, dòng thứ hai yêu cầu CMake sử dụng nó và dòng cuối cùng là tùy chọn và đảm bảo `-std=c++11` so với một cái gì đó như `-std=g++11`. Phương pháp này không tệ cho một gói cuối cùng, nhưng không nên được sử dụng bởi một thư viện. Bạn nên luôn thiết lập điều này như một biến được lưu trong bộ nhớ cache, để bạn có thể dễ dàng ghi đè nó để thử một phiên bản mới (hoặc nếu điều này được sử dụng như một thư viện, đây là cách duy nhất để ghi đè nó - nhưng một lần nữa, đừng sử dụng điều này cho thư viện). Bạn cũng có thể thiết lập các giá trị này trên một mục tiêu:
 
 ```cmake
 set_target_properties(myTarget PROPERTIES
@@ -41,14 +41,15 @@ set_target_properties(myTarget PROPERTIES
 )
 ```
 
-Which is better, but still doesn't have the sort of explicit control that compiler features have for populating `PRIVATE` and `INTERFACE` properties, so it really is only useful on final targets.
+Điều này tốt hơn, nhưng vẫn không có kiểu kiểm soát rõ ràng mà các tính năng trình biên dịch có để điền vào các thuộc tính `PRIVATE` và `INTERFACE`, vì vậy nó thực sự chỉ hữu ích trên các mục tiêu cuối cùng.
 
-You can find more information about the final two methods on [Craig Scott's useful blog post][crascit].
+Bạn có thể tìm thêm thông tin về hai phương pháp cuối cùng trên [bài đăng trên blog hữu ích của Craig Scott][crascit].
 
 :::{danger}
 
-Don't set manual flags yourself. You'll then become responsible for mainting correct flags for every release of every compiler, error messages for unsupported compilers won't be useful, and some IDEs might not pick up the manual flags.
+Đừng tự thiết lập các cờ thủ công. Sau đó, bạn sẽ phải chịu trách nhiệm duy trì các cờ chính xác cho mọi bản phát hành của mọi trình biên dịch, thông báo lỗi cho các trình biên dịch không được hỗ trợ sẽ không hữu ích và một số IDE có thể không nhận các cờ thủ công.
 
 :::
 
 [crascit]: https://crascit.com/2015/03/28/enabling-cxx11-in-cmake/
+

@@ -1,6 +1,6 @@
-# Installing
+# Cài đặt
 
-Install commands cause a file or target to be "installed" into the install tree when you `make install`. Your basic target install command looks like this:
+Các lệnh cài đặt khiến một tệp hoặc mục tiêu được "cài đặt" vào cây cài đặt khi bạn `make install`. Lệnh cài đặt mục tiêu cơ bản của bạn trông như thế này:
 
 ```cmake
 install(TARGETS MyLib
@@ -12,9 +12,9 @@ install(TARGETS MyLib
         )
 ```
 
-The various destinations are only needed if you have a library, static library, or program to install. The includes destination is special; since a target does not install includes. It only sets the includes destination on the exported target (which is often already set by `target_include_directories`, so check the MyLibTargets file and make sure you don't have the include directory included twice if you want clean cmake files).
+Các đích khác nhau chỉ cần thiết nếu bạn có thư viện, thư viện tĩnh hoặc chương trình để cài đặt. Đích includes là đặc biệt; vì một mục tiêu không cài đặt includes. Nó chỉ đặt đích includes trên mục tiêu được xuất (thường đã được đặt bởi `target_include_directories`, vì vậy hãy kiểm tra tệp MyLibTargets và đảm bảo rằng bạn không bao gồm thư mục include hai lần nếu bạn muốn các tệp cmake sạch).
 
-It's usually a good idea to give CMake access to the version, so that `find_package` can have a version specified. That looks like this:
+Thường thì nên cho CMake quyền truy cập vào phiên bản, để `find_package` có thể có phiên bản được chỉ định. Điều đó trông như thế này:
 
 ```cmake
 include(CMakePackageConfigHelpers)
@@ -25,9 +25,9 @@ write_basic_package_version_file(
     )
 ```
 
-You have two choices next. You need to make a `MyLibConfig.cmake`, but you can do it either by exporting your targets directly to it, or by writing it by hand, then including the targets file. The later option is what you'll need if you have any dependencies, even just OpenMP, so I'll illustrate that method.
+Tiếp theo bạn có hai lựa chọn. Bạn cần tạo `MyLibConfig.cmake`, nhưng bạn có thể thực hiện bằng cách xuất trực tiếp các mục tiêu của mình vào đó hoặc bằng cách viết nó bằng tay, sau đó bao gồm tệp mục tiêu. Tùy chọn sau là những gì bạn sẽ cần nếu bạn có bất kỳ phụ thuộc nào, thậm chí chỉ là OpenMP, vì vậy tôi sẽ minh họa phương pháp đó.
 
-First, make an install targets file (very similar to the one you made in the build directory):
+Đầu tiên, tạo một tệp mục tiêu cài đặt (rất giống với tệp bạn đã tạo trong thư mục bản dựng):
 
 ```cmake
 install(EXPORT MyLibTargets
@@ -37,25 +37,25 @@ install(EXPORT MyLibTargets
          )
 ```
 
-This file will take the targets you exported and put them in a file. If you have no dependencies, just use `MyLibConfig.cmake` instead of `MyLibTargets.cmake` here. Then write a custom `MyLibConfig.cmake` file in your source tree somewhere. If you want to capture configure time variables, you can use a `.in` file, and you will want to use the `@var@` syntax. The contents that look like this:
+Tệp này sẽ lấy các mục tiêu bạn đã xuất và đặt chúng vào một tệp. Nếu bạn không có phụ thuộc, chỉ cần sử dụng `MyLibConfig.cmake` thay vì `MyLibTargets.cmake` tại đây. Sau đó, viết một tệp `MyLibConfig.cmake` tùy chỉnh ở đâu đó trong cây nguồn của bạn. Nếu bạn muốn chụp các biến thời gian cấu hình, bạn có thể sử dụng tệp `.in` và bạn sẽ muốn sử dụng cú pháp `@var@`. Nội dung trông như thế này:
 
 ```cmake
 include(CMakeFindDependencyMacro)
 
-# Capturing values from configure (optional)
+# Chụp các giá trị từ cấu hình (tùy chọn)
 set(my-config-var @my-config-var@)
 
-# Same syntax as find_package
+# Cú pháp tương tự như find_package
 find_dependency(MYDEP REQUIRED)
 
-# Any extra setup
+# Bất kỳ thiết lập bổ sung nào
 
-# Add the targets file
+# Thêm tệp mục tiêu
 include("${CMAKE_CURRENT_LIST_DIR}/MyLibTargets.cmake")
 ```
 
-Now, you can use configure file (if you used a `.in` file) and then install the resulting file.
-Since we've made a `ConfigVersion` file, this is a good place to install it too.
+Bây giờ, bạn có thể sử dụng tệp cấu hình (nếu bạn đã sử dụng tệp `.in`) và sau đó cài đặt tệp kết quả.
+Vì chúng tôi đã tạo một tệp `ConfigVersion`, đây là một nơi tốt để cài đặt nó.
 
 ```cmake
 configure_file(MyLibConfig.cmake.in MyLibConfig.cmake @ONLY)
@@ -65,12 +65,13 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/MyLibConfig.cmake"
         )
 ```
 
-That's it! Now once you install a package, there will be files in `lib/cmake/MyLib` that CMake will search for (specifically, `MyLibConfig.cmake` and `MyLibConfigVersion.cmake`), and the targets file that config uses should be there as well.
+Đó là nó! Bây giờ, sau khi bạn cài đặt một gói, sẽ có các tệp trong `lib/cmake/MyLib` mà CMake sẽ tìm kiếm (cụ thể là `MyLibConfig.cmake` và `MyLibConfigVersion.cmake`) và tệp mục tiêu mà cấu hình sử dụng cũng sẽ ở đó.
 
-When CMake searches for a package, it will look in the current install prefix and several standard places. You can also add this to your search path manually, including `MyLib_PATH`, and CMake gives the user nice help output if the configure file is not found.
+Khi CMake tìm kiếm một gói, nó sẽ tìm trong tiền tố cài đặt hiện tại và một số vị trí tiêu chuẩn. Bạn cũng có thể thêm điều này vào đường dẫn tìm kiếm của mình theo cách thủ công, bao gồm `MyLib_PATH` và CMake cung cấp cho người dùng đầu ra trợ giúp đẹp nếu không tìm thấy tệp cấu hình.
 
-The [CMakePackageConfigHelpers](https://cmake.org/cmake/help/latest/module/CMakePackageConfigHelpers.html) module mentioned above has additional tools to help write a more relocatable `Config.cmake` file.
-Refer to the CMake documentation on [configure_package_config_file](https://cmake.org/cmake/help/latest/module/CMakePackageConfigHelpers.html#command:configure_package_config_file) (used instead of `configure_file`) and the `@PACKAGE_INIT@` substitution string to get
+Mô-đun [CMakePackageConfigHelpers](https://cmake.org/cmake/help/latest/module/CMakePackageConfigHelpers.html) được đề cập ở trên có các công cụ bổ sung để giúp viết tệp `Config.cmake` có thể di chuyển được nhiều hơn.
+Tham khảo tài liệu CMake trên [configure_package_config_file](https://cmake.org/cmake/help/latest/module/CMakePackageConfigHelpers.html#command:configure_package_config_file) (được sử dụng thay vì `configure_file`) và chuỗi thay thế `@PACKAGE_INIT@` để nhận
 
-- a set of automatically defined `PACKAGE_<var>` variables (for relative path versions of `<var>`) and
-- a `set_and_check()` alternative to `set()` to automatically check for path existence.
+- một tập hợp các biến `PACKAGE_<var>` được xác định tự động (cho các phiên bản đường dẫn tương đối của `<var>`) và
+- một `set_and_check()` thay thế cho `set()` để tự động kiểm tra sự tồn tại của đường dẫn.
+

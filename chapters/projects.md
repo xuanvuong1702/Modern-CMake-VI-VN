@@ -1,6 +1,7 @@
-# Including Small Projects
+# Bao gồm các dự án nhỏ
 
-This is where a good Git system plus CMake shines. You might not be able to solve all the world's problems, but
-this is pretty close for C++!
+Đây là nơi một hệ thống Git tốt cộng với CMake tỏa sáng. Bạn có thể không giải quyết được tất cả các vấn đề của thế giới, nhưng
+điều này khá gần với C++!
 
-There are several methods listed in the chapters in this section.
+Có một số phương pháp được liệt kê trong các chương trong phần này.
+

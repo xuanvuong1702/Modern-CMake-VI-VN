@@ -1,7 +1,6 @@
-# A simple example
+## Một ví dụ đơn giản
 
-This is a simple yet complete example of a proper CMakeLists. For this program, we have one library (MyLibExample) with a header file and a source file,
-and one application, MyExample, with one source file.
+Đây là một ví dụ đơn giản nhưng đầy đủ về một CMakeLists.txt đúng cách. Đối với chương trình này, chúng ta có một thư viện (MyLibExample) với một tệp tiêu đề và một tệp nguồn, và một ứng dụng, MyExample, với một tệp nguồn.
 
 ```{literalinclude} ../../examples/simple-project/CMakeLists.txt
 :start-after: "[main]"
@@ -9,6 +8,6 @@ and one application, MyExample, with one source file.
 :language: cmake
 ```
 
-The complete example is available in [examples folder](https://gitlab.com/CLIUtils/modern-cmake/tree/master/examples/simple-project).
+Ví dụ đầy đủ có sẵn trong [thư mục ví dụ](https://gitlab.com/CLIUtils/modern-cmake/tree/master/examples/simple-project).
 
-A larger, multi-file example is [also available](https://gitlab.com/CLIUtils/modern-cmake/tree/master/examples/extended-project).
+Một ví dụ lớn hơn, nhiều tệp [cũng có sẵn](https://gitlab.com/CLIUtils/modern-cmake/tree/master/examples/extended-project).

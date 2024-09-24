@@ -1,12 +1,12 @@
-# How to structure your project
+# Cách cấu trúc dự án của bạn
 
-The following information is biased. But in a good way, I think. I'm going to tell you how to structure the directories in your project. This is based on convention, but will help you:
+Thông tin sau đây mang tính chủ quan. Nhưng theo một cách tốt, tôi nghĩ vậy. Tôi sẽ cho bạn biết cách cấu trúc các thư mục trong dự án của bạn. Điều này dựa trên quy ước, nhưng sẽ giúp bạn:
 
-- Easily read other projects following the same patterns,
-- Avoid a pattern that causes conflicts,
-- Keep from muddling and complicating your build.
+- Dễ dàng đọc các dự án khác theo cùng một mẫu,
+- Tránh một mẫu gây ra xung đột,
+- Tránh làm rối và phức tạp bản dựng của bạn.
 
-First, this is what your files should look like when you start if your project is creatively called `project`, with a library called `lib`, and a executable called `app`:
+Đầu tiên, đây là những gì tệp của bạn sẽ trông như thế nào khi bạn bắt đầu nếu dự án của bạn được đặt tên một cách sáng tạo là `project`, với một thư viện có tên là `lib` và một tệp thực thi có tên là `app`:
 
 ```
 - project
@@ -37,28 +37,28 @@ First, this is what your files should look like when you start if your project i
     - helper.py
 ```
 
-The names are not absolute; you'll see contention about `test/` vs. `tests/`, and the application folder may be called something else (or not exist for a library-only project). You'll also sometime see a `python` folder for python bindings, or a `cmake` folder for helper CMake files, like `Find<library>.cmake` files. But the basics are there.
+Các tên không phải là tuyệt đối; bạn sẽ thấy tranh cãi về `test/` so với `tests/` và thư mục ứng dụng có thể được gọi là một cái gì đó khác (hoặc không tồn tại đối với dự án chỉ có thư viện). Bạn cũng sẽ đôi khi thấy một thư mục `python` cho các ràng buộc python hoặc một thư mục `cmake` cho các tệp CMake trợ giúp, như các tệp `Find<library>.cmake`. Nhưng những điều cơ bản là có.
 
-Notice a few things already apparent; the `CMakeLists.txt` files are split up over all source directories, and are not in the include directories. This is because you should be able to copy the contents of the include directory to `/usr/include` or similar directly (except for configuration headers, which I go over in another chapter), and not have any extra files or cause any conflicts. That's also why there is a directory for your project inside the include directory. Use `add_subdirectory` to add a subdirectory containing a `CMakeLists.txt`.
+Lưu ý một vài điều đã rõ ràng; các tệp `CMakeLists.txt` được chia nhỏ trên tất cả các thư mục nguồn và không có trong các thư mục include. Điều này là do bạn có thể sao chép nội dung của thư mục include trực tiếp vào `/usr/include` hoặc tương tự (ngoại trừ các tiêu đề cấu hình, mà tôi sẽ trình bày trong một chương khác) và không có bất kỳ tệp bổ sung nào hoặc gây ra bất kỳ xung đột nào. Đó cũng là lý do tại sao có một thư mục cho dự án của bạn bên trong thư mục include. Sử dụng `add_subdirectory` để thêm một thư mục con chứa `CMakeLists.txt`.
 
-You often want a `cmake` folder, with all of your helper modules. This is where your `Find*.cmake` files go. An set of some common helpers is at [github.com/CLIUtils/cmake](https://github.com/CLIUtils/cmake). To add this folder to your CMake path:
+Bạn thường muốn có một thư mục `cmake`, với tất cả các mô-đun trợ giúp của bạn. Đây là nơi các tệp `Find*.cmake` của bạn đi. Một tập hợp một số trình trợ giúp phổ biến có tại [github.com/CLIUtils/cmake](https://github.com/CLIUtils/cmake). Để thêm thư mục này vào đường dẫn CMake của bạn:
 
 ```cmake
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 ```
 
-Your `extern` folder should contain git submodules almost exclusively. That way, you can control the version of the dependencies explicitly, but still upgrade easily. See the Testing chapter for an example of adding a submodule.
+Thư mục `extern` của bạn nên chứa gần như hoàn toàn các mô-đun con git. Bằng cách đó, bạn có thể kiểm soát rõ ràng phiên bản của các phụ thuộc, nhưng vẫn có thể dễ dàng nâng cấp. Xem chương Kiểm tra để biết ví dụ về cách thêm mô-đun con.
 
-You should have something like `/build*` in your `.gitignore`, so that users can make build directories in the source directory and use those to build. A few packages prohibit this, but it's much better than doing a true out-of-source build and having to type something different for each package you build.
+Bạn nên có một cái gì đó giống như `/build*` trong `.gitignore` của mình, để người dùng có thể tạo các thư mục bản dựng trong thư mục nguồn và sử dụng chúng để bản dựng. Một số gói cấm điều này, nhưng nó tốt hơn nhiều so với việc thực hiện bản dựng thực sự ngoài nguồn và phải nhập một cái gì đó khác nhau cho mỗi gói bạn bản dựng.
 
-If you want to avoid the build directory being in a valid source directory, add this near the top of your CMakeLists:
+Nếu bạn muốn tránh thư mục bản dựng nằm trong thư mục nguồn hợp lệ, hãy thêm điều này gần đầu CMakeLists của bạn:
 
 ```cmake
-### Require out-of-source builds
+### Yêu cầu bản dựng ngoài nguồn
 file(TO_CMAKE_PATH "${PROJECT_BINARY_DIR}/CMakeLists.txt" LOC_PATH)
 if(EXISTS "${LOC_PATH}")
-    message(FATAL_ERROR "You cannot build in a source directory (or any directory with a CMakeLists.txt file). Please make a build subdirectory. Feel free to remove CMakeCache.txt and CMakeFiles.")
+    message(FATAL_ERROR "Bạn không thể bản dựng trong thư mục nguồn (hoặc bất kỳ thư mục nào có tệp CMakeLists.txt). Vui lòng tạo một thư mục con bản dựng. Bạn có thể xóa CMakeCache.txt và CMakeFiles.")
 endif()
 ```
 
-See the [extended code example here](https://gitlab.com/CLIUtils/modern-cmake/tree/master/examples/extended-project).
+Xem [ví dụ mã mở rộng tại đây](https://gitlab.com/CLIUtils/modern-cmake/tree/master/examples/extended-project).

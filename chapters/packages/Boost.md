@@ -1,8 +1,8 @@
-# Boost library
+## Thư viện Boost
 
-The Boost library is included in the find packages that CMake provides, but it has a couple of oddities in how it works. See [FindBoost] for a full description; this will just give a quick overview and provide a recipe. Be sure to check the page for the minimum required version of CMake you are using and see what options you have.
+Thư viện Boost được bao gồm trong các gói tìm kiếm mà CMake cung cấp, nhưng nó có một vài điểm kỳ lạ trong cách thức hoạt động. Xem [FindBoost] để biết mô tả đầy đủ; phần này sẽ chỉ cung cấp một cái nhìn tổng quan nhanh và một công thức sử dụng. Hãy chắc chắn kiểm tra trang để biết phiên bản CMake tối thiểu cần thiết mà bạn đang sử dụng và xem bạn có những tùy chọn nào.
 
-First, you can customize the behavior of the Boost libraries selected using a set of variables that you set before searching for Boost. There are a growing number of settings, but here are the three most common ones:
+Đầu tiên, bạn có thể tùy chỉnh hành vi của các thư viện Boost được chọn bằng cách sử dụng một tập hợp các biến mà bạn đặt trước khi tìm kiếm Boost. Có một số lượng ngày càng tăng các cài đặt, nhưng đây là ba cài đặt phổ biến nhất:
 
 ```cmake
 set(Boost_USE_STATIC_LIBS OFF)
@@ -10,12 +10,11 @@ set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 ```
 
-In CMake 3.5, imported targets were added. These targets handle dependencies for you as well, so they are a very nice way to add Boost libraries. However, CMake has the dependency information baked into it for all known versions of Boost, so CMake must be newer than Boost for these to work. In a recent [merge request][mroldboost], CMake started assuming that the dependencies hold from the last version it knows about, and will use that (along with giving a warning). This
-functionality was backported into CMake 3.9.
+Trong CMake 3.5, các target được import đã được thêm vào. Các target này cũng xử lý các dependency cho bạn, vì vậy chúng là một cách rất hay để thêm các thư viện Boost. Tuy nhiên, CMake có thông tin dependency được tích hợp sẵn cho tất cả các phiên bản Boost đã biết, vì vậy CMake phải mới hơn Boost để chúng hoạt động. Trong một [yêu cầu hợp nhất] gần đây [mroldboost], CMake đã bắt đầu giả định rằng các dependency được giữ từ phiên bản cuối cùng mà nó biết, và sẽ sử dụng điều đó (cùng với việc đưa ra cảnh báo). Chức năng này đã được backport vào CMake 3.9.
 
-The import targets are in the `Boost::` namespace. `Boost::boost` is the header only part. The other compiled libraries are available, and include dependencies as needed.
+Các target import nằm trong namespace `Boost::`. `Boost::boost` là phần chỉ dành cho header. Các thư viện được biên dịch khác có sẵn và bao gồm các dependency khi cần thiết.
 
-Here is an example for using the `Boost::filesystem` library:
+Dưới đây là một ví dụ về cách sử dụng thư viện `Boost::filesystem`:
 
 ```cmake
 set(Boost_USE_STATIC_LIBS OFF)
@@ -24,8 +23,8 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 find_package(Boost 1.50 REQUIRED COMPONENTS filesystem)
 message(STATUS "Boost version: ${Boost_VERSION}")
 
-# This is needed if your Boost version is newer than your CMake version
-# or if you have an old version of CMake (<3.5)
+# Điều này là cần thiết nếu phiên bản Boost của bạn mới hơn phiên bản CMake của bạn
+# hoặc nếu bạn có phiên bản CMake cũ (<3.5)
 if(NOT TARGET Boost::filesystem)
     add_library(Boost::filesystem IMPORTED INTERFACE)
     set_property(TARGET Boost::filesystem PROPERTY

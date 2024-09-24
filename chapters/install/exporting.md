@@ -1,26 +1,26 @@
-# Exporting
+# Xuất khẩu
 
 :::{danger}
 
-The default behavior for exporting changed in CMake 3.15. Since changing files in a user's home directory is considered "surprising" (and it is, which is why this chapter exists), it is no longer the default behavior. If you set a minimum or maximum CMake version of 3.15 or later, this will no longer happen unless you set `CMAKE_EXPORT_PACKAGE_REGISTRY` as shown below.
+Hành vi mặc định để xuất đã thay đổi trong CMake 3.15. Vì việc thay đổi các tệp trong thư mục chính của người dùng được coi là "bất ngờ" (và đúng là vậy, đó là lý do tại sao chương này tồn tại), nên nó không còn là hành vi mặc định nữa. Nếu bạn đặt phiên bản CMake tối thiểu hoặc tối đa là 3.15 trở lên, điều này sẽ không còn xảy ra nữa trừ khi bạn đặt `CMAKE_EXPORT_PACKAGE_REGISTRY` như được hiển thị bên dưới.
 
 :::
 
-There are three ways to access a project from another project: subdirectory, exported build directories, and installing. To use the build directory of one project in another project, you will need to export targets. Exporting targets is needed for a proper install; allowing the build directory to be used is just two added lines. It is not generally a way to work that I would recommend, but can be useful for development and as way to prepare the installation procedure discussed later.
+Có ba cách để truy cập một dự án từ một dự án khác: thư mục con, thư mục bản dựng được xuất và cài đặt. Để sử dụng thư mục bản dựng của một dự án trong một dự án khác, bạn sẽ cần xuất các mục tiêu. Xuất các mục tiêu là cần thiết cho việc cài đặt đúng cách; cho phép sử dụng thư mục bản dựng chỉ là hai dòng được thêm vào. Nói chung, đó không phải là một cách làm việc mà tôi khuyên dùng, nhưng có thể hữu ích cho việc phát triển và như một cách để chuẩn bị quy trình cài đặt được thảo luận sau.
 
-You should make an export set, probably near the end of your main `CMakeLists.txt`:
+Bạn nên tạo một tập hợp xuất, có thể ở gần cuối `CMakeLists.txt` chính của bạn:
 
 ```cmake
 export(TARGETS MyLib1 MyLib2 NAMESPACE MyLib:: FILE MyLibTargets.cmake)
 ```
 
-This puts the targets you have listed into a file in the build directory, and optionally prefixes them with a namespace. Now, to allow CMake to find this package, export the package into the `$HOME/.cmake/packages` folder:
+Điều này đặt các mục tiêu bạn đã liệt kê vào một tệp trong thư mục bản dựng và tùy chọn thêm tiền tố cho chúng bằng một không gian tên. Bây giờ, để cho phép CMake tìm thấy gói này, hãy xuất gói vào thư mục `$HOME/.cmake/packages`:
 
 ```cmake
 set(CMAKE_EXPORT_PACKAGE_REGISTRY ON)
 export(PACKAGE MyLib)
 ```
 
-Now, if you `find_package(MyLib)`, CMake can find the build folder. Look at the generated `MyLibTargets.cmake` file to help you understand exactly what is created; it's just a normal CMake file, with the exported targets.
+Bây giờ, nếu bạn `find_package(MyLib)`, CMake có thể tìm thấy thư mục bản dựng. Hãy xem tệp `MyLibTargets.cmake` được tạo để giúp bạn hiểu chính xác những gì được tạo; nó chỉ là một tệp CMake bình thường, với các mục tiêu được xuất.
 
-Note that there's a downside: if you have imported dependencies, they will need to be imported before you `find_package`. That will be fixed in the next method.
+Lưu ý rằng có một nhược điểm: nếu bạn đã nhập các phụ thuộc, chúng sẽ cần được nhập trước khi bạn `find_package`. Điều đó sẽ được khắc phục trong phương pháp tiếp theo.

@@ -1,12 +1,12 @@
-# ROOT
+## ROOT
 
-ROOT is a C++ Toolkit for High Energy Physics. It is huge. There are really a lot of ways to use it in CMake, though many/most of the examples you'll find are probably wrong. Here's my recommendation.
+ROOT là một bộ công cụ C++ dành cho Vật lý Năng lượng Cao. Nó rất lớn. Có rất nhiều cách để sử dụng nó trong CMake, mặc dù nhiều/hầu hết các ví dụ bạn tìm thấy có thể là sai. Đây là khuyến nghị của tôi.
 
-Most importantly, there are _lots of improvements_ in CMake support in more recent versions of ROOT - Using 6.16+ is much, much easier! If you really must support 6.14 or earlier, see the section at the end. There were further improvements in 6.20, as well, it behaves much more like a proper CMake project, and exports C++ standard features for targets, etc.
+Quan trọng nhất, có _rất nhiều cải tiến_ trong hỗ trợ CMake trong các phiên bản ROOT gần đây - Sử dụng 6.16+ dễ dàng hơn rất nhiều! Nếu bạn thực sự phải hỗ trợ 6.14 hoặc phiên bản trước đó, hãy xem phần cuối. Cũng có những cải tiến hơn nữa trong 6.20, nó hoạt động giống như một dự án CMake phù hợp hơn và xuất các tính năng tiêu chuẩn C++ cho target, v.v.
 
-## Finding ROOT
+## Tìm kiếm ROOT
 
-ROOT 6.10+ supports config file discovery, so you can just do:
+ROOT 6.10+ hỗ trợ khám phá tệp cấu hình, vì vậy bạn có thể thực hiện:
 
 ```{literalinclude} ../../examples/root-simple/CMakeLists.txt
 :start-after: "[find_package]"
@@ -14,13 +14,13 @@ ROOT 6.10+ supports config file discovery, so you can just do:
 :language: cmake
 ```
 
-to attempt to find ROOT. If you don't have your paths set up, you can pass `-DROOT_DIR=$ROOTSYS/cmake` to find ROOT. (But, really, you should source `thisroot.sh`).
+để thử tìm ROOT. Nếu bạn chưa thiết lập đường dẫn, bạn có thể truyền `-DROOT_DIR=$ROOTSYS/cmake` để tìm ROOT. (Nhưng, thực sự, bạn nên sử dụng `thisroot.sh`).
 
-## The right way (Targets)
+## Cách đúng (Target)
 
-ROOT 6.12 and earlier do not add the include directory for imported targets. ROOT 6.14+ has corrected this error, and required target properties have been getting better. This method is rapidly becoming easier to use (see the example at the end of this page for the older ROOT details).
+ROOT 6.12 trở về trước không thêm thư mục include cho target được import. ROOT 6.14+ đã sửa lỗi này và các thuộc tính target bắt buộc đã trở nên tốt hơn. Phương pháp này đang nhanh chóng trở nên dễ sử dụng hơn (xem ví dụ ở cuối trang này để biết chi tiết về ROOT cũ hơn).
 
-To link, just pick the libraries you want to use:
+Để liên kết, chỉ cần chọn các thư viện bạn muốn sử dụng:
 
 ```{literalinclude} ../../examples/root-simple/CMakeLists.txt
 :start-after: "[add_and_link]"
@@ -28,7 +28,7 @@ To link, just pick the libraries you want to use:
 :language: cmake
 ```
 
-If you'd like to see the default list, run `root-config --libs` on the command line. In Homebrew ROOT 6.18 this would be:
+Nếu bạn muốn xem danh sách mặc định, hãy chạy `root-config --libs` trên dòng lệnh. Trong Homebrew ROOT 6.18, đây sẽ là:
 
 - `ROOT::Core`
 - `ROOT::Gpad`
@@ -50,11 +50,11 @@ If you'd like to see the default list, run `root-config --libs` on the command l
 - `ROOT::TreePlayer`
 - `ROOT::Tree`
 
-## The old global way
+## Cách toàn cục cũ
 
-ROOT [provides a utility](https://root.cern.ch/how/integrate-root-my-project-cmake) to set up a ROOT project, which you can activate using `include("${ROOT_USE_FILE}")`. This will automatically make ugly directory level and global variables for you. It will save you a little time setting up, and will waste massive amounts of time later if you try to do anything tricky. As long as you aren't making a library, it's probably fine for simple scripts. Includes and flags are set globally, but you'll still need to link to `${ROOT_LIBRARIES}` yourself, along with possibly `ROOT_EXE_LINKER_FLAGS` (You will have to `separate_arguments` first before linking or you will get an error if there are multiple flags, like on macOS). Also, before 6.16, you have to manually fix a bug in the spacing.
+ROOT [cung cấp một tiện ích](https://root.cern.ch/how/integrate-root-my-project-cmake) để thiết lập một dự án ROOT, mà bạn có thể kích hoạt bằng cách sử dụng `include("${ROOT_USE_FILE}")`. Điều này sẽ tự động tạo các biến cấp thư mục và toàn cục xấu xí cho bạn. Nó sẽ giúp bạn tiết kiệm một ít thời gian thiết lập và sẽ lãng phí rất nhiều thời gian sau này nếu bạn cố gắng làm bất cứ điều gì phức tạp. Miễn là bạn không tạo thư viện, nó có thể ổn cho các tập lệnh đơn giản. Include và flag được đặt toàn cục, nhưng bạn vẫn cần tự liên kết với `${ROOT_LIBRARIES}`, cùng với có thể là `ROOT_EXE_LINKER_FLAGS` (Bạn sẽ phải `separate_arguments` trước khi liên kết hoặc bạn sẽ gặp lỗi nếu có nhiều flag, như trên macOS). Ngoài ra, trước 6.16, bạn phải tự sửa lỗi về khoảng cách.
 
-Here's what it would look like:
+Đây là những gì nó sẽ trông như thế nào:
 
 ```{literalinclude} ../../examples/root-usefile/CMakeLists.txt
 :start-after: "[core]"
@@ -62,100 +62,100 @@ Here's what it would look like:
 :language: cmake
 ```
 
-## Components
+## Thành phần
 
-Find ROOT allows you to specify components. It will add anything you list to `${ROOT_LIBRARIES}`, so you might want to build your own target using that to avoid listing the components twice. This did not solve dependencies; it was an error to list `RooFit` but not `RooFitCore`. If you link to `ROOT::RooFit` instead of `${ROOT_LIBRARIES}`, then `RooFitCore` is not required.
+Find ROOT cho phép bạn chỉ định các thành phần. Nó sẽ thêm bất cứ thứ gì bạn liệt kê vào `${ROOT_LIBRARIES}`, vì vậy bạn có thể muốn xây dựng target của riêng mình bằng cách sử dụng điều đó để tránh liệt kê các thành phần hai lần. Điều này không giải quyết được các dependency; đó là một lỗi khi liệt kê `RooFit` nhưng không phải `RooFitCore`. Nếu bạn liên kết đến `ROOT::RooFit` thay vì `${ROOT_LIBRARIES}`, thì `RooFitCore` không bắt buộc.
 
-## Dictionary generation
+## Tạo từ điển
 
-Dictionary generation is ROOT's way of working around the missing reflection feature in C++. It allows ROOT to learn the details of your class so it can save it, show methods in the Cling interpreter, etc. Your source code will need the following modifications to support dictionary generation:
+Tạo từ điển là cách ROOT giải quyết tính năng phản chiếu bị thiếu trong C++. Nó cho phép ROOT tìm hiểu chi tiết về lớp của bạn để nó có thể lưu nó, hiển thị các phương thức trong trình thông dịch Cling, v.v. Mã nguồn của bạn sẽ cần các sửa đổi sau để hỗ trợ tạo từ điển:
 
-- Your class definition should end with `ClassDef(MyClassName, 1)`
-- Your class implementation should have `ClassImp(MyClassName)` in it
+- Định nghĩa lớp của bạn nên kết thúc bằng `ClassDef(MyClassName, 1)`
+- Triển khai lớp của bạn nên có `ClassImp(MyClassName)` trong đó
 
-ROOT provides `rootcling` and `genreflex` (a legacy interface to `rootcling`) binaries which produce the source files required to build the dictionary. It also defines `root_generate_dictionary`, a CMake function to invoke `rootcling` during the build process.
+ROOT cung cấp các tệp nhị phân `rootcling` và `genreflex` (một giao diện kế thừa cho `rootcling`) tạo ra các tệp nguồn cần thiết để xây dựng từ điển. Nó cũng định nghĩa `root_generate_dictionary`, một hàm CMake để gọi `rootcling` trong quá trình build.
 
-To load this function, first include the ROOT macros:
+Để tải hàm này, trước tiên hãy include các macro ROOT:
 
 ```cmake
 include("${ROOT_DIR}/modules/RootNewMacros.cmake")
-# For ROOT versions than 6.16, things break
-# if nothing is in the global include list!
+# Đối với các phiên bản ROOT hơn 6.16, mọi thứ sẽ bị hỏng
+# nếu không có gì trong danh sách include toàn cục!
 if (${ROOT_VERSION} VERSION_LESS "6.16")
     include_directories(ROOT_NONEXISTENT_DIRECTORY_HACK)
 endif()
 ```
 
-The `if(...)` condition is added to fix a bug in the NewMacros file that causes dictionary generation to fail if there is not at least one global include directory or a `inc` folder. Here I'm including a non-existent directory just to make it work. There is no `ROOT_NONEXISTENT_DIRECTORY_HACK` directory.
+Điều kiện `if(...)` được thêm vào để sửa lỗi trong tệp NewMacros khiến việc tạo từ điển không thành công nếu không có ít nhất một thư mục include toàn cục hoặc thư mục `inc`. Ở đây tôi đang include một thư mục không tồn tại chỉ để làm cho nó hoạt động. Không có thư mục `ROOT_NONEXISTENT_DIRECTORY_HACK`.
 
-`rootcling` uses a special header file with a [specific formula][linkdef-root] to determine which parts to generate dictionaries for. The name of this file may have any prefix, but **must** end with `LinkDef.h`. Once you have written this header file, the dictionary generation function can be invoked.
+`rootcling` sử dụng một tệp tiêu đề đặc biệt với [công thức cụ thể][linkdef-root] để xác định phần nào để tạo từ điển. Tên của tệp này có thể có bất kỳ tiền tố nào, nhưng **phải** kết thúc bằng `LinkDef.h`. Sau khi bạn đã viết tệp tiêu đề này, có thể gọi hàm tạo từ điển.
 
-### Manually building the dictionary
+### Tạo từ điển thủ công
 
-Sometimes, you might want to ask ROOT to generate the dictionary, and then add the source file to your library target yourself. You can call the `root_generate_dictionary` with the name of the dictionary, e.g. `G__Example`, any required header files, and finally the special `LinkDef.h` file, listed after `LINKDEF`:
+Đôi khi, bạn có thể muốn yêu cầu ROOT tạo từ điển, sau đó tự thêm tệp nguồn vào target thư viện của mình. Bạn có thể gọi `root_generate_dictionary` với tên của từ điển, ví dụ: `G__Example`, bất kỳ tệp tiêu đề nào cần thiết và cuối cùng là tệp `LinkDef.h` đặc biệt, được liệt kê sau `LINKDEF`:
 
 ```cmake
 root_generate_dictionary(G__Example Example.h LINKDEF ExampleLinkDef.h)
 ```
 
-This command will create three files:
+Lệnh này sẽ tạo ba tệp:
 
-- `${NAME}.cxx`: This file should be included in your sources when you make your library.
-- `lib{NAME}.rootmap` (`G__` prefix removed): The rootmap file in plain text
-- `lib{NAME}_rdict.pcm` (`G__` prefix removed): A [ROOT pre-compiled module file][]
-  The name (`${NAME}`) of the targetthat you must create is determined by the dictionary name; if the dictionary name starts with `G__`, it will be removed. Otherwise, the name is used directly.
+- `${NAME}.cxx`: Tệp này nên được bao gồm trong nguồn của bạn khi bạn tạo thư viện của mình.
+- `lib{NAME}.rootmap` (tiền tố `G__` bị xóa): Tệp rootmap ở dạng văn bản thuần túy
+- `lib{NAME}_rdict.pcm` (tiền tố `G__` bị xóa): Tệp [mô-đun được biên dịch trước của ROOT][]
+  Tên (`${NAME}`) của target mà bạn phải tạo được xác định bởi tên từ điển; nếu tên từ điển bắt đầu bằng `G__`, nó sẽ bị xóa. Nếu không, tên được sử dụng trực tiếp.
 
-The final two output files must sit next to the library output. This is done by checking `CMAKE_LIBRARY_OUTPUT_DIRECTORY` (it will not pick up local target settings). If you have a libdir set but you don't have (global) install locations set, you'll also need to set `ARG_NOINSTALL` to `TRUE`.
+Hai tệp đầu ra cuối cùng phải nằm cạnh đầu ra thư viện. Điều này được thực hiện bằng cách kiểm tra `CMAKE_LIBRARY_OUTPUT_DIRECTORY` (nó sẽ không chọn cài đặt target cục bộ). Nếu bạn đã đặt libdir nhưng bạn chưa đặt vị trí cài đặt (toàn cầu), bạn cũng sẽ cần đặt `ARG_NOINSTALL` thành `TRUE`.
 
-### Building the dictionary with an existing target
+### Xây dựng từ điển với một target hiện có
 
-Instead of manually adding the generated to your library sources, you can ask ROOT to do this for you by passing a `MODULE` argument. This argument should specify the name of an existing build target:
+Thay vì tự thêm các tệp được tạo vào nguồn thư viện của bạn, bạn có thể yêu cầu ROOT làm điều này cho bạn bằng cách chuyển đối số `MODULE`. Đối số này phải chỉ định tên của target build hiện có:
 
 ```cmake
 add_library(Example)
 root_generate_dictionary(G__Example Example.h MODULE Example LINKDEF ExampleLinkDef.h)
 ```
 
-The full name of the dictionary (e.g. `G__Example`) should not be identical to the `MODULE` argument.
+Tên đầy đủ của từ điển (ví dụ: `G__Example`) không được giống hệt với đối số `MODULE`.
 
 [linkdef-root]: https://root.cern.ch/selecting-dictionary-entries-linkdefh
 [root pre-compiled module file]: https://inspirehep.net/literature/1413967
 
 ---
 
-# Using Old ROOT
+# Sử dụng ROOT cũ
 
-If you really have to use older ROOT, you'll need something like this:
+Nếu bạn thực sự phải sử dụng ROOT cũ hơn, bạn sẽ cần một cái gì đó như thế này:
 
 ```cmake
-# ROOT targets are missing includes and flags in ROOT 6.10 and 6.12
+# Target ROOT bị thiếu include và flag trong ROOT 6.10 và 6.12
 set_property(TARGET ROOT::Core PROPERTY
     INTERFACE_INCLUDE_DIRECTORIES "${ROOT_INCLUDE_DIRS}")
 
-# Early ROOT does not include the flags required on targets
+# ROOT ban đầu không bao gồm các flag bắt buộc trên target
 add_library(ROOT::Flags_CXX IMPORTED INTERFACE)
 
 
-# ROOT 6.14 and earlier have a spacing bug in the linker flags
+# ROOT 6.14 trở về trước có lỗi khoảng cách trong flag trình liên kết
 string(REPLACE "-L " "-L" ROOT_EXE_LINKER_FLAGS "${ROOT_EXE_LINKER_FLAGS}")
 
-# Fix for ROOT_CXX_FLAGS not actually being a CMake list
+# Sửa lỗi cho ROOT_CXX_FLAGS không thực sự là danh sách CMake
 separate_arguments(ROOT_CXX_FLAGS)
 set_property(TARGET ROOT::Flags_CXX APPEND PROPERTY
     INTERFACE_COMPILE_OPTIONS ${ROOT_CXX_FLAGS})
 
-# Add definitions
+# Thêm định nghĩa
 separate_arguments(ROOT_DEFINITIONS)
 foreach(_flag ${ROOT_EXE_LINKER_FLAG_LIST})
-    # Remove -D or /D if present
+    # Xóa -D hoặc /D nếu có
     string(REGEX REPLACE [=[^[-//]D]=] "" _flag ${_flag})
     set_property(TARGET ROOT::Flags APPEND PROPERTY INTERFACE_LINK_LIBRARIES ${_flag})
 endforeach()
 
-# This also fixes a bug in the linker flags
+# Điều này cũng sửa lỗi trong flag trình liên kết
 separate_arguments(ROOT_EXE_LINKER_FLAGS)
 set_property(TARGET ROOT::Flags_CXX APPEND PROPERTY
     INTERFACE_LINK_LIBRARIES ${ROOT_EXE_LINKER_FLAGS})
 
-# Make sure you link with ROOT::Flags_CXX too!
+# Đảm bảo bạn cũng liên kết với ROOT::Flags_CXX!
 ```

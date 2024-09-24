@@ -1,17 +1,17 @@
-# Useful Modules
+# Các mô-đun hữu ích
 
-There are a ton of useful modules in CMake's {{ cmake.format('modules') }} collection; but some of them are more useful than others. Here are a few highlights.
+Có rất nhiều mô-đun hữu ích trong bộ sưu tập {{ cmake.format('modules') }} của CMake; nhưng một số trong số chúng hữu ích hơn những cái khác. Dưới đây là một số điểm nổi bật.
 
 ## {{ module.format('CMakeDependentOption') }}
 
-This adds a command `cmake_dependent_option` that sets an option based on another set of variables being true. It looks like this:
+Mô-đun này thêm một lệnh `cmake_dependent_option` để đặt một tùy chọn dựa trên một tập hợp các biến khác là đúng. Nó trông như thế này:
 
 ```cmake
 include(CMakeDependentOption)
-cmake_dependent_option(BUILD_TESTS "Build your tests" ON "VAL1;VAL2" OFF)
+cmake_dependent_option(BUILD_TESTS "Xây dựng các bài kiểm tra của bạn" ON "VAL1;VAL2" OFF)
 ```
 
-which is just a shortcut for this:
+mà chỉ là một cách viết tắt cho điều này:
 
 ```cmake
 if(VAL1 AND VAL2)
@@ -20,37 +20,37 @@ else()
     set(BUILD_TESTS_DEFAULT OFF)
 endif()
 
-option(BUILD_TESTS "Build your tests" ${BUILD_TESTS_DEFAULT})
+option(BUILD_TESTS "Xây dựng các bài kiểm tra của bạn" ${BUILD_TESTS_DEFAULT})
 
 if(NOT BUILD_TESTS_DEFAULT)
     mark_as_advanced(BUILD_TESTS)
 endif()
 ```
 
-Note that `BUILD_TESTING` is a better way to check for testing being enabled if you use `include(CTest)`, since it is defined for you. This is just an example of `CMakeDependentOption`.
+Lưu ý rằng `BUILD_TESTING` là một cách tốt hơn để kiểm tra xem thử nghiệm có được bật hay không nếu bạn sử dụng `include(CTest)`, vì nó được xác định cho bạn. Đây chỉ là một ví dụ về `CMakeDependentOption`.
 
 ## {{ module.format('CMakePrintHelpers') }}
 
-This module has a couple of handy output functions. `cmake_print_properties` lets you easily print properties.
-And `cmake_print_variables` will print the names and values of any variables you give it.
+Mô-đun này có một vài hàm xuất ra tiện dụng. `cmake_print_properties` cho phép bạn dễ dàng in các thuộc tính.
+Và `cmake_print_variables` sẽ in tên và giá trị của bất kỳ biến nào bạn cung cấp cho nó.
 
 ## {{ module.format('CheckCXXCompilerFlag') }}
 
-This checks to see if a flag is supported. For example:
+Mô-đun này kiểm tra xem một cờ có được hỗ trợ hay không. Ví dụ:
 
 ```cmake
 include(CheckCXXCompilerFlag)
 check_cxx_compiler_flag(-someflag OUTPUT_VARIABLE)
 ```
 
-Note that `OUTPUT_VARIABLE` will also appear in the configuration printout, so choose a good name.
+Lưu ý rằng `OUTPUT_VARIABLE` cũng sẽ xuất hiện trong bản in cấu hình, vì vậy hãy chọn một tên tốt.
 
-This is just one of many similar modules, such as `CheckIncludeFileCXX`, `CheckStructHasMember`, `TestBigEndian`, and `CheckTypeSize` that allow you
-to check for information about the system (and you can communicate that to your source code).
+Đây chỉ là một trong nhiều mô-đun tương tự, chẳng hạn như `CheckIncludeFileCXX`, `CheckStructHasMember`, `TestBigEndian` và `CheckTypeSize` cho phép bạn
+kiểm tra thông tin về hệ thống (và bạn có thể truyền đạt thông tin đó đến mã nguồn của mình).
 
 ## {{ command.format('try_compile') }}/{{ command.format('try_run') }}
 
-This is not exactly a module, but is crucial to many of the modules listed above. You can attempt to compile (and possibly run) a bit of code at configure time. This can allow you to get information about the capabilities of your system. The basic syntax is:
+Đây không hẳn là một mô-đun, nhưng rất quan trọng đối với nhiều mô-đun được liệt kê ở trên. Bạn có thể thử biên dịch (và có thể chạy) một đoạn mã tại thời điểm cấu hình. Điều này có thể cho phép bạn nhận được thông tin về khả năng của hệ thống của mình. Cú pháp cơ bản là:
 
 ```cmake
 try_compile(
@@ -61,34 +61,34 @@ try_compile(
 )
 ```
 
-There are lots of options you can add, like `COMPILE_DEFINITIONS`. In CMake 3.8+, this will honor the CMake C/C++/CUDA standard settings. If you use `try_run` instead, it will run the resulting program and give you the output in `RUN_OUTPUT_VARIABLE`.
+Có rất nhiều tùy chọn bạn có thể thêm, như `COMPILE_DEFINITIONS`. Trong CMake 3.8+, điều này sẽ tuân theo các cài đặt tiêu chuẩn CMake C/C++/CUDA. Nếu bạn sử dụng `try_run` thay vào đó, nó sẽ chạy chương trình kết quả và cung cấp cho bạn đầu ra trong `RUN_OUTPUT_VARIABLE`.
 
 ## {{ module.format('FeatureSummary') }}
 
-This is a fairly useful but rather odd module. It allows you to print out a list of packages what were searched for, as well as any options you explicitly mark. It's partially but not completely tied into {{ command.format('find_package') }}. You first include the module, as always:
+Đây là một mô-đun khá hữu ích nhưng khá kỳ lạ. Nó cho phép bạn in ra một danh sách các gói đã được tìm kiếm, cũng như bất kỳ tùy chọn nào bạn đánh dấu rõ ràng. Nó được liên kết một phần nhưng không hoàn toàn với {{ command.format('find_package') }}. Trước tiên, bạn bao gồm mô-đun, như mọi khi:
 
 ```cmake
 include(FeatureSummary)
 ```
 
-Then, for any find packages you have run or will run, you can extend the default information:
+Sau đó, đối với bất kỳ gói tìm kiếm nào bạn đã chạy hoặc sẽ chạy, bạn có thể mở rộng thông tin mặc định:
 
 ```cmake
 set_package_properties(OpenMP PROPERTIES
     URL "http://www.openmp.org"
-    DESCRIPTION "Parallel compiler directives"
-    PURPOSE "This is what it does in my package")
+    DESCRIPTION "Chỉ thị trình biên dịch song song"
+    PURPOSE "Đây là những gì nó làm trong gói của tôi")
 ```
 
-You can also set the `TYPE` of a package to `RUNTIME`, `OPTIONAL`, `RECOMMENDED`, or `REQUIRED`; you can't, however, lower the type of a package; if you have already added a `REQUIRED` package through {{ command.format('find_package') }} based on an option, you'll see it listed as `REQUIRED`.
+Bạn cũng có thể đặt `TYPE` của một gói thành `RUNTIME`, `OPTIONAL`, `RECOMMENDED` hoặc `REQUIRED`; tuy nhiên, bạn không thể hạ thấp loại gói; nếu bạn đã thêm một gói `REQUIRED` thông qua {{ command.format('find_package') }} dựa trên một tùy chọn, bạn sẽ thấy nó được liệt kê là `REQUIRED`.
 
-And, you can mark any options as part of the feature summary. If you choose the same name as a package, the two interact with each other.
+Và, bạn có thể đánh dấu bất kỳ tùy chọn nào là một phần của tóm tắt tính năng. Nếu bạn chọn cùng tên với một gói, hai gói sẽ tương tác với nhau.
 
 ```cmake
-add_feature_info(WITH_OPENMP OpenMP_CXX_FOUND "OpenMP (Thread safe FCNs only)")
+add_feature_info(WITH_OPENMP OpenMP_CXX_FOUND "OpenMP (Chỉ FCN an toàn cho luồng)")
 ```
 
-Then, you can print out the summary of features, either to the screen or a log file:
+Sau đó, bạn có thể in ra tóm tắt các tính năng, lên màn hình hoặc tệp nhật ký:
 
 ```cmake
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
@@ -97,4 +97,5 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 endif()
 ```
 
-You can build any collection of `WHAT` items that you like, or just use `ALL`.
+Bạn có thể xây dựng bất kỳ bộ sưu tập các mục `WHAT` nào bạn thích hoặc chỉ sử dụng `ALL`.
+

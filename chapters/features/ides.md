@@ -1,48 +1,48 @@
-# Supporting IDEs
+# Hỗ trợ IDE
 
-In general, IDEs are already supported by a standard CMake project. There are just a few extra things that can help IDEs perform even better.
+Nói chung, IDE đã được hỗ trợ bởi một dự án CMake tiêu chuẩn. Chỉ có một vài điều bổ sung có thể giúp IDE hoạt động tốt hơn nữa.
 
-## Folders for targets
+## Thư mục cho các mục tiêu
 
-Some IDEs, like Xcode, support folders. You have to manually enable the `USE_FOLDERS` global property to allow CMake to organize your files by folders:
+Một số IDE, như Xcode, hỗ trợ thư mục. Bạn phải bật thủ công thuộc tính toàn cục `USE_FOLDERS` để cho phép CMake sắp xếp các tệp của bạn theo thư mục:
 
 ```cmake
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 ```
 
-Then, you can add targets to folders after you create them:
+Sau đó, bạn có thể thêm các mục tiêu vào thư mục sau khi bạn tạo chúng:
 
 ```cmake
 set_property(TARGET MyFile PROPERTY FOLDER "Scripts")
 ```
 
-Folders can be nested with `/`.
+Các thư mục có thể được lồng nhau bằng `/`.
 
-You can control how files show up in each folder with regular expressions or explicit listings in [`source_group`](https://cmake.org/cmake/help/latest/command/source_group.html):
+Bạn có thể kiểm soát cách các tệp hiển thị trong mỗi thư mục bằng các biểu thức chính quy hoặc danh sách rõ ràng trong [`source_group`](https://cmake.org/cmake/help/latest/command/source_group.html):
 
-## Folders for files
+## Thư mục cho các tệp
 
-You can also control how the folders inside targets appear. There are two ways, both using the {{ command.format('source_group') }} command. The traditional way is
+Bạn cũng có thể kiểm soát cách các thư mục bên trong mục tiêu xuất hiện. Có hai cách, cả hai đều sử dụng lệnh {{ command.format('source_group') }}. Cách truyền thống là
 
 ```cmake
 source_group("Source Files\\New Directory" REGULAR_EXPRESSION ".*\\.c[ucp]p?")
 ```
 
-You can explicitly list files with `FILES`, or use a `REGULAR_EXPRESSION`. This way you have complete control over the folder structure. However, if your on-disk layout is well designed, you might just want to mimic that. In CMake 3.8+, you can do so very easily with a new version of the {{ command.format('source_group') }} command:
+Bạn có thể liệt kê rõ ràng các tệp bằng `FILES` hoặc sử dụng `REGULAR_EXPRESSION`. Bằng cách này, bạn có toàn quyền kiểm soát cấu trúc thư mục. Tuy nhiên, nếu bố cục trên đĩa của bạn được thiết kế tốt, bạn có thể chỉ muốn bắt chước điều đó. Trong CMake 3.8+, bạn có thể làm như vậy rất dễ dàng với phiên bản mới của lệnh {{ command.format('source_group') }}:
 
 ```cmake
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/base/dir" PREFIX "Header Files" FILES ${FILE_LIST})
 ```
 
-For the `TREE` option, you should usually give a full path starting with something like `${CMAKE_CURRENT_SOURCE_DIR}/` (because the command interprets paths relative to the build directory).
-The prefix tells you where it puts it into the IDE structure, and the `FILES` option takes a list of files.
-CMake will strip the `TREE` path from the `FILE_LIST` path, it will add `PREFIX`, and that will be the IDE folder structure.
+Đối với tùy chọn `TREE`, bạn thường nên cung cấp đường dẫn đầy đủ bắt đầu bằng một cái gì đó giống như `${CMAKE_CURRENT_SOURCE_DIR}/` (vì lệnh diễn giải các đường dẫn liên quan đến thư mục bản dựng).
+Tiền tố cho bạn biết nơi nó đặt nó vào cấu trúc IDE và tùy chọn `FILES` nhận một danh sách các tệp.
+CMake sẽ loại bỏ đường dẫn `TREE` khỏi đường dẫn `FILE_LIST`, nó sẽ thêm `PREFIX` và đó sẽ là cấu trúc thư mục IDE.
 
-> Note: If you need to support CMake < 3.8, I would recommend just protecting the above command, and only supporting nice folder layout on CMake 3.8+. For older methods to do this folder layout, see
-> [this blog post][sorting].
+> Lưu ý: Nếu bạn cần hỗ trợ CMake < 3.8, tôi khuyên bạn chỉ nên bảo vệ lệnh trên và chỉ hỗ trợ bố cục thư mục đẹp trên CMake 3.8+. Đối với các phương pháp cũ hơn để thực hiện bố cục thư mục này, hãy xem
+> [bài đăng trên blog này][sorting].
 
-## Running with an IDE
+## Chạy với IDE
 
-To use an IDE, either pass `-G"name of IDE"` if CMake can produce that IDE's files (like Xcode, Visual Studio), or open the CMakeLists.txt file from your IDE if that IDE has built in support for CMake (CLion, QtCreator, many others).
+Để sử dụng IDE, hãy chuyển `-G"tên của IDE"` nếu CMake có thể tạo các tệp của IDE đó (như Xcode, Visual Studio) hoặc mở tệp CMakeLists.txt từ IDE của bạn nếu IDE đó có hỗ trợ tích hợp sẵn cho CMake (CLion, QtCreator, nhiều IDE khác).
 
 [sorting]: http://blog.audio-tk.com/2015/09/01/sorting-source-files-and-projects-in-folders-with-cmake-and-visual-studioxcode/

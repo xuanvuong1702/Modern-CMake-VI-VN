@@ -1,25 +1,25 @@
-# Exporting and Installing
+# Xuất và Cài đặt
 
-There are three good ways and one bad way to allow others use your library:
+Có ba cách tốt và một cách xấu để cho phép người khác sử dụng thư viện của bạn:
 
-## Find module (the bad way)
+## Mô-đun Find (cách xấu)
 
-If you are the library author, don't make a `Find<mypackage>.cmake` script! These were designed for libraries whose authors did not support CMake. Use a `Config<mypackage>.cmake` instead as listed below.
+Nếu bạn là tác giả thư viện, đừng tạo tập lệnh `Find<mypackage>.cmake`! Những thứ này được thiết kế cho các thư viện mà tác giả của chúng không hỗ trợ CMake. Sử dụng `Config<mypackage>.cmake` thay thế như được liệt kê bên dưới.
 
-## Add Subproject
+## Thêm dự án con
 
-A package can include your project in a subdirectory, and then use `add_subdirectory` on the subdirectory. This useful for header-only and quick-to-compile libraries. Note that the install commands may interfere with the parent project, so you can add `EXCLUDE_FROM_ALL` to the `add_subdirectory` command; the targets you explicitly use will still be built.
+Một gói có thể bao gồm dự án của bạn trong một thư mục con, sau đó sử dụng `add_subdirectory` trên thư mục con. Điều này hữu ích cho các thư viện chỉ có tiêu đề và biên dịch nhanh. Lưu ý rằng các lệnh cài đặt có thể can thiệp vào dự án cha, vì vậy bạn có thể thêm `EXCLUDE_FROM_ALL` vào lệnh `add_subdirectory`; các mục tiêu bạn sử dụng rõ ràng vẫn sẽ được xây dựng.
 
-In order to support this as a library author, make sure you use `CMAKE_CURRENT_SOURCE_DIR` instead of `PROJECT_SOURCE_DIR` (and likewise for other variables, like binary dirs). You can check `CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME` to only add options or defaults that make sense if this is a project.
+Để hỗ trợ điều này với tư cách là tác giả thư viện, hãy đảm bảo rằng bạn sử dụng `CMAKE_CURRENT_SOURCE_DIR` thay vì `PROJECT_SOURCE_DIR` (và tương tự cho các biến khác, như thư mục nhị phân). Bạn có thể kiểm tra `CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME` để chỉ thêm các tùy chọn hoặc mặc định có ý nghĩa nếu đây là một dự án.
 
-Also, since namespaces are a good idea, and the usage of your library should be consistent with the other methods below, you should add
+Ngoài ra, vì không gian tên là một ý tưởng hay và việc sử dụng thư viện của bạn phải nhất quán với các phương pháp khác bên dưới, bạn nên thêm
 
 ```cmake
 add_library(MyLib::MyLib ALIAS MyLib)
 ```
 
-to standardise the usage across all methods. This ALIAS target will not be exported below.
+để chuẩn hóa cách sử dụng trên tất cả các phương pháp. Mục tiêu ALIAS này sẽ không được xuất bên dưới.
 
-## Exporting
+## Xuất
 
-The third way is `*Config.cmake` scripts; that will be the topic of the next chapter in this session.
+Cách thứ ba là các tập lệnh `*Config.cmake`; đó sẽ là chủ đề của chương tiếp theo trong phiên này.

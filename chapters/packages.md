@@ -1,3 +1,3 @@
-# Finding Packages
+# Tìm kiếm gói
 
-There are two ways to find packages in CMake: "Module" mode and "Config" mode.
+Có hai cách để tìm gói trong CMake: chế độ "Module" và chế độ "Config". 

@@ -1,19 +1,18 @@
-# Adding features
+# Thêm tính năng
 
-This section covers adding common features to your CMake project. You'll learn how to add a variety of options commonly needed in C++ projects, like C++11 support, as well as how to support IDEs and more.
+Phần này bao gồm việc thêm các tính năng phổ biến vào dự án CMake của bạn. Bạn sẽ học cách thêm nhiều tùy chọn thường cần thiết trong các dự án C++, như hỗ trợ C++11, cũng như cách hỗ trợ IDE và hơn thế nữa.
 
-## Default build type
+## Kiểu build mặc định
 
-CMake normally does a "non-release, non debug" empty build type; if you prefer to set the default build type yourself, you can follow this
-recipe for the default build type modified from the [Kitware blog](https://blog.kitware.com/cmake-and-the-default-build-type/):
+CMake thường thực hiện kiểu build trống "không phải release, không phải debug"; nếu bạn muốn tự đặt kiểu build mặc định, bạn có thể làm theo công thức này cho kiểu build mặc định được sửa đổi từ [blog Kitware](https://blog.kitware.com/cmake-and-the-default-build-type/):
 
 ```cmake
 set(default_build_type "Release")
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
-  message(STATUS "Setting build type to '${default_build_type}' as none was specified.")
+  message(STATUS "Đặt kiểu build thành '${default_build_type}' vì không có kiểu nào được chỉ định.")
   set(CMAKE_BUILD_TYPE "${default_build_type}" CACHE
-      STRING "Choose the type of build." FORCE)
-  # Set the possible values of build type for cmake-gui
+      STRING "Chọn kiểu build." FORCE)
+  # Đặt các giá trị có thể có của kiểu build cho cmake-gui
   set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS
     "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 endif()
