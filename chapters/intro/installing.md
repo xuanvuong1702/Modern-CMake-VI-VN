@@ -6,50 +6,50 @@ Phiên bản CMake của bạn phải mới hơn trình biên dịch của bạn
 
 :::
 
-Nếu bạn có một bản sao CMake tích hợp sẵn, nó không phải là đặc biệt hoặc được tùy chỉnh cho hệ thống của bạn. Bạn có thể dễ dàng cài đặt một cái mới thay vào đó, ở cấp độ hệ thống hoặc cấp độ người dùng. Hãy thoải mái hướng dẫn người dùng của bạn ở đây nếu họ phàn nàn về yêu cầu CMake được đặt quá cao. Đặc biệt là nếu họ muốn hỗ trợ 3.15+. Thậm chí có thể nếu họ muốn hỗ trợ 3.30+...
+Nếu bạn có một bản sao CMake được tích hợp sẵn, nó không đặc biệt hoặc được tùy chỉnh cho hệ thống của bạn. Bạn có thể dễ dàng cài đặt một bản mới thay thế, ở cấp hệ thống hoặc cấp người dùng. Hãy thoải mái hướng dẫn người dùng của bạn tại đây nếu họ phàn nàn về yêu cầu CMake được đặt quá cao. Đặc biệt nếu họ muốn hỗ trợ CMake 3.15 trở lên. Thậm chí nếu họ muốn hỗ trợ CMake 3.30 trở lên...
 
 ## Danh sách nhanh (thông tin thêm về mỗi phương pháp bên dưới)
 
 Được sắp xếp theo sở thích của tác giả:
 
 - Tất cả
-  - [Pip(x)][pypi] (chính thức, thường cập nhật cùng ngày)
+  - [Pip(x)][pypi] (chính thức, thường cập nhật trong cùng ngày)
   - [Anaconda][] / [Conda-Forge][]
 - Windows
   - [Winget][]
   - [Chocolatey][]
   - [Scoop][]
   - [MSYS2][]
-  - [Tải xuống tệp nhị phân][download] (chính thức)
-- MacOS
+  - [Tải xuống bản nhị phân][download] (chính thức)
+- macOS
   - [Homebrew][]
   - [MacPorts][]
-  - [Tải xuống tệp nhị phân][download] (chính thức)
+  - [Tải xuống bản nhị phân][download] (chính thức)
 - Linux
   - [Snapcraft][snap] (chính thức)
   - [Kho APT][apt] (chỉ Ubuntu/Debian) (chính thức)
-  - [Tải xuống tệp nhị phân][download] (chính thức)
+  - [Tải xuống bản nhị phân][download] (chính thức)
 
 ## Gói chính thức
 
 Bạn có thể [tải xuống CMake từ KitWare][download]. Đây là cách bạn có thể sẽ nhận được CMake nếu bạn đang sử dụng Windows. Nó cũng không phải là một cách tồi để tải nó trên macOS (và phiên bản Universal2 được cung cấp hỗ trợ cả Intel và Apple Silicon), nhưng sử dụng `brew install cmake` sẽ tốt hơn nhiều nếu bạn sử dụng [Homebrew](https://brew.sh) (và bạn nên; Apple thậm chí còn hỗ trợ Homebrew chẳng hạn như trong quá trình triển khai Apple Silicon). Bạn cũng có thể tải nó trên hầu hết các trình quản lý gói khác, chẳng hạn như [Chocolatey](https://chocolatey.org) cho Windows hoặc [MacPorts](https://www.macports.org) cho macOS.
 
-Trên Linux, có một số tùy chọn. Kitware cung cấp [kho lưu trữ apt Debian/Ubuntu][apt], cũng như [các gói snap][snap]. Có các tệp nhị phân Linux phổ biến được cung cấp, nhưng bạn sẽ cần chọn một vị trí cài đặt. Nếu bạn đã sử dụng `~/.local` cho các gói không gian người dùng, lệnh một dòng sau[^1] sẽ tải CMake cho bạn[^2]:
+Trên Linux, có một số tùy chọn. Kitware cung cấp [kho lưu trữ apt Debian/Ubuntu][apt], cũng như [các gói snap][snap]. Có các bản nhị phân Linux phổ biến được cung cấp, nhưng bạn sẽ cần chọn một vị trí cài đặt. Nếu bạn đã sử dụng `~/.local` cho các gói không gian người dùng, lệnh một dòng sau[^1] sẽ tải CMake cho bạn[^2]:
 
 ```bash
 ~ $ wget -qO- "https://cmake.org/files/v3.30/cmake-3.30.2-linux-x86_64.tar.gz" | tar --strip-components=1 -xz -C ~/.local
 ```
 
-Tên đã thay đổi trong 3.20; các bản phát hành cũ hơn có tên như `cmake-3.19.7-Linux-x86_64.tar.gz`. Nếu bạn chỉ muốn một thư mục cục bộ chỉ có CMake:
+Tên đã thay đổi trong CMake 3.20; các bản phát hành cũ hơn có tên như `cmake-3.19.7-Linux-x86_64.tar.gz`. Nếu bạn chỉ muốn một thư mục cục bộ chỉ có CMake:
 
 ```bash
 ~ $ mkdir -p cmake-3.30 && wget -qO- "https://cmake.org/files/v3.30/cmake-3.30.2-linux-x86_64.tar.gz" | tar --strip-components=1 -xz -C cmake-3.30
 ~ $ export PATH=`pwd`/cmake-3.30/bin:$PATH
 ```
 
-Bạn rõ ràng sẽ muốn nối vào PATH mỗi khi bạn bắt đầu một thiết bị đầu cuối mới hoặc thêm nó vào `.bashrc` của bạn hoặc vào hệ thống [LMod][].
+Rõ ràng, bạn sẽ muốn nối vào PATH mỗi khi bạn bắt đầu một terminal mới hoặc thêm nó vào `.bashrc` của bạn hoặc vào hệ thống [LMod][].
 
-Và, nếu bạn muốn cài đặt hệ thống, hãy cài đặt vào `/usr/local`; đây là một lựa chọn tuyệt vời trong bộ chứa Docker, ví dụ: trên GitLab CI. Không thử nó trên hệ thống không phải bộ chứa.
+Và, nếu bạn muốn cài đặt hệ thống, hãy cài đặt vào `/usr/local`; đây là một lựa chọn tuyệt vời trong container Docker, ví dụ: trên GitLab CI. Không thử nó trên hệ thống không phải container.
 
 ```bash
 docker $ wget -qO- "https://cmake.org/files/v3.30/cmake-3.30.2-linux-x86_64.tar.gz" | tar --strip-components=1 -xz -C /usr/local
@@ -57,11 +57,11 @@ docker $ wget -qO- "https://cmake.org/files/v3.30/cmake-3.30.2-linux-x86_64.tar.
 
 Nếu bạn đang ở trên hệ thống không có wget, hãy thay thế `wget -qO-` bằng `curl -s`.
 
-Bạn cũng có thể xây dựng CMake trên bất kỳ hệ thống nào, nó khá dễ dàng, nhưng các tệp nhị phân nhanh hơn.
+Bạn cũng có thể build CMake trên bất kỳ hệ thống nào, nó khá dễ dàng, nhưng các bản nhị phân nhanh hơn.
 
 ## Phiên bản CMake mặc định
 
-Dưới đây là một số môi trường bản dựng phổ biến và phiên bản CMake mà bạn sẽ tìm thấy trên chúng. Hãy thoải mái tự cài đặt CMake, nó chỉ mất 1-2 dòng và không có gì "đặc biệt" về phiên bản tích hợp sẵn. Nó cũng tương thích ngược rất tốt.
+Dưới đây là một số môi trường build phổ biến và phiên bản CMake mà bạn sẽ tìm thấy trên chúng. Hãy thoải mái tự cài đặt CMake, nó chỉ mất 1-2 dòng và không có gì "đặc biệt" về phiên bản tích hợp sẵn. Nó cũng tương thích ngược rất tốt.
 
 ### Windows
 
@@ -73,7 +73,7 @@ Dưới đây là một số môi trường bản dựng phổ biến và phiên
 
 Ngoài ra [Scoop][scoop] thường được cập nhật. Các trình cài đặt thông thường từ CMake.org cũng phổ biến trên Windows.
 
-### MacOS
+### macOS
 
 [![Gói Homebrew](https://repology.org/badge/version-for-repo/homebrew/cmake.svg)][homebrew]
 [![Gói Homebrew Casks](https://repology.org/badge/version-for-repo/homebrew_casks/cmake.svg)][homebrew-cask]
@@ -89,7 +89,7 @@ Homebrew ngày nay phổ biến hơn nhiều trên macOS, ít nhất là theo Go
 [![Gói CentOS 8](https://repology.org/badge/version-for-repo/centos_8/cmake.svg?minversion=3.15.0)][centos]
 [![Gói EPEL 7](https://repology.org/badge/version-for-repo/epel_7/cmake.svg?minversion=3.15.0)][centos]
 
-Mặc định trên 8 không quá tệ, nhưng bạn không nên sử dụng mặc định trên CentOS 7 sắp hết vòng đời. Hãy sử dụng gói EPEL thay thế.
+Mặc định trên CentOS 8 không quá tệ, nhưng bạn không nên sử dụng mặc định trên CentOS 7 sắp hết vòng đời. Hãy sử dụng gói EPEL thay thế.
 
 #### Ubuntu
 
@@ -124,36 +124,36 @@ Mặc định trên 8 không quá tệ, nhưng bạn không nên sử dụng m�
 [![Conda-forge](https://img.shields.io/conda/vn/conda-forge/cmake.svg)][conda-forge]
 [![Anaconda](https://anaconda.org/anaconda/cmake/badges/version.svg?style=flat)][anaconda]
 
-Chỉ cần `pip install cmake` trên nhiều hệ thống. Thêm `--user` nếu bạn phải làm như vậy (pip hiện đại sẽ làm điều này cho bạn nếu cần). Điều này chưa cung cấp các bánh xe Universal2.
+Chỉ cần `pip install cmake` trên nhiều hệ thống. Thêm `--user` nếu bạn phải làm vậy (pip hiện đại sẽ làm điều này cho bạn nếu cần). Cách này hiện chưa cung cấp các wheel Universal2.
 
 ### CI
 
-| Phân phối                                                                                                                         | Phiên bản CMake | Ghi chú                                                        |
+| Distribution                                                                                                                         | Phiên bản CMake | Ghi chú                                                        |
 | ------------------------------------------------------------------------------------------------------------------------------------ | ------------- | ------------------------------------------------------------ |
-| [Azure DevOps](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/hosted?view=azure-devops#use-a-microsoft-hosted-agent) | 3.30.0        | được cập nhật                                              |
-| [GitHub Actions 20.04](https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-Readme.md)                  | 3.30.0        | Các trình chạy giống như Azure DevOps                                 |
+| [Azure DevOps](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/hosted?view=azure-devops#use-a-microsoft-hosted-agent) | 3.30.0        | Được cập nhật thường xuyên                                     |
+| [GitHub Actions 20.04](https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-Readme.md)                  | 3.30.0        | Sử dụng cùng runner với Azure DevOps                           |
 
-Nếu bạn đang sử dụng GitHub Actions, hãy xem thêm hành động [jwlawson/actions-setup-cmake](https://github.com/marketplace/actions/actions-setup-cmake), có thể cài đặt CMake mà bạn lựa chọn, ngay cả trong quá trình chạy hành động docker.
+Nếu bạn đang sử dụng GitHub Actions, hãy xem thêm action [jwlawson/actions-setup-cmake](https://github.com/marketplace/actions/actions-setup-cmake), có thể cài đặt phiên bản CMake mà bạn lựa chọn, ngay cả trong một docker action.
 
 ### Danh sách đầy đủ
 
-Các phiên bản nhỏ hơn 3.15 được đánh dấu bằng màu đỏ đậm hơn.
+Các phiên bản thấp hơn 3.15 được đánh dấu bằng màu đỏ đậm hơn.
 
 [![Danh sách đầy đủ](https://repology.org/badge/vertical-allrepos/cmake.svg?columns=3&minversion=3.15.0)][repology]
 
-Ngoài ra, hãy xem [pkgs.org/download/cmake](https://pkgs.org/download/cmake).
+Xem thêm [pkgs.org/download/cmake](https://pkgs.org/download/cmake).
 
 ## Pip
 
-[Điều này][pypi] cũng được cung cấp dưới dạng gói chính thức, do các tác giả của CMake tại KitWare và một số thành viên PyPA, bao gồm cả tôi, duy trì. Giờ đây, nó được hỗ trợ trên các kiến trúc đặc biệt, như PowerPC trên Linux và Apple Silicon trên macOS, và cả trên các hệ thống MUSL như Alpine. Nếu bạn có pip (trình cài đặt gói của Python), bạn có thể làm:
+[Cách này][pypi] cũng được cung cấp dưới dạng một gói chính thức, được duy trì bởi các tác giả của CMake tại KitWare và một số thành viên PyPA, bao gồm cả tôi. Giờ đây, nó được hỗ trợ trên các kiến trúc đặc biệt, như PowerPC trên Linux và Apple Silicon trên macOS, và cả trên các hệ thống MUSL như Alpine. Nếu bạn có pip (trình cài đặt gói của Python), bạn có thể làm như sau:
 
 ```bash
 pip install cmake
 ```
 
-Và miễn là tệp nhị phân tồn tại cho hệ thống của bạn, bạn sẽ có thể sử dụng nó gần như ngay lập tức. Nếu tệp nhị phân không tồn tại, nó sẽ cố gắng sử dụng gói `scikit-build` của KitWare để xây dựng và sẽ yêu cầu một bản sao CMake cũ hơn để xây dựng. Vì vậy, chỉ sử dụng hệ thống này nếu các tệp nhị phân tồn tại, đó là phần lớn thời gian.
+Và miễn là có bản nhị phân tồn tại cho hệ thống của bạn, bạn sẽ có thể sử dụng nó gần như ngay lập tức. Nếu bản nhị phân không tồn tại, nó sẽ cố gắng sử dụng gói `scikit-build` của KitWare để build và sẽ yêu cầu một bản sao CMake cũ hơn để build. Vì vậy, chỉ sử dụng hệ thống này nếu các bản nhị phân tồn tại, đó là phần lớn thời gian.
 
-Điều này cũng có lợi ích là tôn trọng môi trường ảo hiện tại của bạn. Tuy nhiên, nó thực sự tỏa sáng khi được đặt trong tệp `pyproject.toml` - nó sẽ chỉ được cài đặt để xây dựng gói của bạn và sẽ không còn lại sau đó! Tuyệt vời.
+Điều này cũng có lợi ích là tôn trọng môi trường ảo hiện tại của bạn. Tuy nhiên, nó thực sự tỏa sáng khi được đặt trong tệp `pyproject.toml` - nó sẽ chỉ được cài đặt để build gói của bạn và sẽ không còn lại sau đó! Tuyệt vời.
 
 Tất nhiên, điều này cũng hoạt động với pipx. Vì vậy, bạn thậm chí có thể sử dụng `pipx run cmake` để chạy CMake trong môi trường ảo dùng một lần, mà không cần bất kỳ thiết lập nào - và điều này hoạt động ngay lập tức trên GitHub Actions, vì `pipx` là trình quản lý gói được hỗ trợ ở đó!
 
@@ -165,8 +165,8 @@ Cá nhân tôi, trên Linux, tôi đặt các phiên bản CMake trong các thư
 
 :::
 
-[^1]: Tôi giả định điều này là hiển nhiên, nhưng bạn đang tải xuống và chạy mã, điều này khiến bạn gặp phải một cuộc tấn công man-in-the-middle. Nếu bạn đang ở trong môi trường quan trọng, bạn nên tải xuống tệp và kiểm tra tổng kiểm tra. (Và, không, chỉ cần thực hiện việc này trong hai bước không làm cho bạn an toàn hơn, chỉ có tổng kiểm tra mới an toàn hơn).
-[^2]: Nếu bạn không có `.local` trong thư mục chính của mình, bạn có thể dễ dàng bắt đầu. Chỉ cần tạo thư mục, sau đó thêm `export PATH="$HOME/.local/bin:$PATH"` vào tệp `.bashrc` hoặc `.bash_profile` hoặc `.profile` của bạn trong thư mục chính. Bây giờ bạn có thể cài đặt bất kỳ gói nào bạn xây dựng thành `-DCMAKE_INSTALL_PREFIX=~/.local` thay vì `/usr/local`!
+[^1]: Tôi giả định điều này là hiển nhiên, nhưng bạn đang tải xuống và chạy mã, điều này khiến bạn gặp phải tấn công man-in-the-middle. Nếu bạn đang ở trong môi trường quan trọng, bạn nên tải xuống tệp và kiểm tra checksum. (Và, không, chỉ cần thực hiện việc này trong hai bước không làm cho bạn an toàn hơn, chỉ có checksum mới an toàn hơn).
+[^2]: Nếu bạn không có `.local` trong thư mục chính của mình, bạn có thể dễ dàng bắt đầu. Chỉ cần tạo thư mục, sau đó thêm `export PATH="$HOME/.local/bin:$PATH"` vào tệp `.bashrc` hoặc `.bash_profile` hoặc `.profile` của bạn trong thư mục chính. Bây giờ bạn có thể cài đặt bất kỳ gói nào bạn build thành `-DCMAKE_INSTALL_PREFIX=~/.local` thay vì `/usr/local`!
 
 [repology]: https://repology.org/project/cmake/versions
 [lmod]: http://lmod.readthedocs.io/en/latest/

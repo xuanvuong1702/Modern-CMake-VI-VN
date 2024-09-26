@@ -1,12 +1,12 @@
-## Chạy CMake
+# Chạy CMake
 
 Trước khi viết CMake, hãy đảm bảo bạn biết cách chạy nó để tạo ra các tệp tin cần thiết. Điều này đúng với hầu hết tất cả các dự án CMake, gần như là tất cả mọi thứ.
 
-## Xây dựng một dự án
+## Build một dự án
 
-Trừ khi có ghi chú khác, bạn nên luôn tạo một thư mục build và xây dựng từ đó. Về mặt kỹ thuật, bạn có thể thực hiện build ngay trong thư mục nguồn, nhưng bạn sẽ phải cẩn thận để không ghi đè lên các tệp hoặc thêm chúng vào git, vì vậy tốt nhất là đừng làm vậy.
+Trừ khi có ghi chú khác, bạn nên luôn tạo một thư mục build và build từ đó. Về mặt kỹ thuật, bạn có thể thực hiện build ngay trong thư mục nguồn (in-source build), nhưng bạn sẽ phải cẩn thận để không ghi đè lên các tệp hoặc thêm chúng vào git, vì vậy tốt nhất là đừng làm vậy.
 
-Dưới đây là Quy trình Xây dựng CMake Cổ điển (TM):
+Dưới đây là Quy trình Build CMake Cổ điển (TM):
 
 ```bash
 ~/package $ mkdir build
@@ -42,7 +42,7 @@ Vậy bạn nên sử dụng phương pháp nào? Miễn là bạn _không quên
 
 Để làm rõ, bạn có thể trỏ CMake vào thư mục nguồn _từ thư mục build_, hoặc vào thư mục build _đã tồn tại_ từ bất kỳ đâu.
 
-Nếu bạn sử dụng `cmake --build` thay vì gọi trực tiếp hệ thống build bên dưới, bạn có thể sử dụng `-v` để build chi tiết (CMake 3.14+), `-j N` để build song song trên N lõi (CMake 3.12+), và `--target` (bất kỳ phiên bản CMake nào) hoặc `-t` (CMake 3.15+) để chọn một target. Nếu không, các lệnh này sẽ khác nhau giữa các hệ thống build, chẳng hạn như `VERBOSE=1 make` và `ninja -v`. Thay vào đó, bạn cũng có thể sử dụng các biến môi trường cho những điều này, chẳng hạn như `CMAKE_BUILD_PARALLEL_LEVEL` (CMake 3.12+) và `VERBOSE` (CMake 3.14+).
+Nếu bạn sử dụng `cmake --build` thay vì gọi trực tiếp hệ thống build bên dưới, bạn có thể sử dụng `-v` để build chi tiết (verbose builds) (CMake 3.14+), `-j N` để build song song trên N lõi (CMake 3.12+), và `--target` (bất kỳ phiên bản CMake nào) hoặc `-t` (CMake 3.15+) để chọn một target. Nếu không, các lệnh này sẽ khác nhau giữa các hệ thống build, chẳng hạn như `VERBOSE=1 make` và `ninja -v`. Thay vào đó, bạn cũng có thể sử dụng các biến môi trường cho những điều này, chẳng hạn như `CMAKE_BUILD_PARALLEL_LEVEL` (CMake 3.12+) và `VERBOSE` (CMake 3.14+).
 
 ## Chọn trình biên dịch
 
@@ -54,21 +54,21 @@ Việc chọn trình biên dịch phải được thực hiện trong lần ch�
 
 Điều đó đặt các biến môi trường trong bash cho CC và CXX, và CMake sẽ tôn trọng các biến đó. Điều này chỉ đặt nó cho dòng đó, nhưng đó là lần duy nhất bạn sẽ cần chúng; sau đó CMake tiếp tục sử dụng các đường dẫn mà nó suy ra từ các giá trị đó.
 
-## Chọn một trình tạo (generator)
+## Chọn một generator
 
-Bạn có thể build bằng nhiều công cụ khác nhau; `make` thường là mặc định. Để xem tất cả các công cụ CMake biết trên hệ thống của bạn, hãy chạy
+Bạn có thể build bằng nhiều công cụ khác nhau; `make` thường là mặc định. Để xem tất cả các công cụ mà CMake biết trên hệ thống của bạn, hãy chạy
 
 ```bash
 ~/package/build $ cmake --help
 ```
 
-Và bạn có thể chọn một công cụ bằng `-G"My Tool"` (chỉ cần dấu ngoặc kép nếu tên công cụ có khoảng trắng). Bạn nên chọn một công cụ trong lần gọi CMake đầu tiên của mình trong một thư mục, giống như trình biên dịch. 
-Bạn có thể đặt biến môi trường `CMAKE_GENERATOR` để kiểm soát trình tạo mặc định (CMake 3.15+).
-Lưu ý rằng makefiles sẽ chỉ chạy song song nếu bạn truyền rõ ràng số lượng luồng, chẳng hạn như `make -j2`, trong khi Ninja sẽ tự động chạy song song. Bạn có thể trực tiếp truyền một tùy chọn song song hóa như `-j2` cho lệnh `cmake --build .` trong các phiên bản CMake gần đây.
+Và bạn có thể chọn một công cụ bằng `-G"My Tool"` (chỉ cần dấu ngoặc kép nếu tên công cụ có khoảng trắng). Bạn nên chọn một công cụ trong lần gọi CMake đầu tiên của mình trong một thư mục, giống như trình biên dịch. Hãy thoải mái tạo nhiều thư mục build, như `build/` và `buildXcode`.
+Bạn có thể đặt biến môi trường `CMAKE_GENERATOR` để kiểm soát generator mặc định (CMake 3.15+).
+Lưu ý rằng makefile sẽ chỉ chạy song song nếu bạn truyền rõ ràng số lượng luồng, chẳng hạn như `make -j2`, trong khi Ninja sẽ tự động chạy song song. Bạn có thể trực tiếp truyền một tùy chọn song song hóa như `-j2` cho lệnh `cmake --build .` trong các phiên bản CMake gần đây.
 
 ## Đặt tùy chọn
 
-Bạn đặt các tùy chọn trong CMake bằng `-D`. Bạn có thể xem danh sách các tùy chọn bằng `-L`, hoặc danh sách có trợ giúp dễ đọc bằng `-LH`. 
+Bạn đặt các tùy chọn trong CMake bằng `-D`. Bạn có thể xem danh sách các tùy chọn bằng `-L`, hoặc danh sách có trợ giúp dễ đọc bằng `-LH`. Nếu bạn không liệt kê thư mục nguồn/build, danh sách sẽ không chạy lại CMake (`cmake -L` thay vì `cmake -L .`).
 
 ## Build chi tiết và build một phần
 
