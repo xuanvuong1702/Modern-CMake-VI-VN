@@ -5,7 +5,7 @@ Có hai cách để hướng dẫn CMake xây dựng gói của bạn; một là
 ```cmake
 # Hỗ trợ đóng gói
 set(CPACK_PACKAGE_VENDOR "Tên nhà cung cấp")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Tóm tắt nào đó")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Mô tả tóm tắt")
 set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
 set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
 set(CPACK_PACKAGE_VERSION_PATCH ${PROJECT_VERSION_PATCH})
@@ -13,9 +13,9 @@ set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
 set(CPACK_RESOURCE_FILE_README "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
 ```
 
-Đây là những biến phổ biến nhất mà bạn sẽ cần để tạo một gói nhị phân. Một gói nhị phân sử dụng cơ chế cài đặt của CMake, vì vậy bất cứ thứ gì được cài đặt sẽ có mặt.
+Đây là những biến phổ biến nhất mà bạn sẽ cần để tạo một gói nhị phân. Gói nhị phân sử dụng cơ chế cài đặt của CMake, vì vậy bất cứ thứ gì được cài đặt sẽ có mặt.
 
-Bạn cũng có thể tạo một gói nguồn. Bạn nên đặt `CPACK_SOURCE_IGNORE_FILES` thành các biểu thức chính quy đảm bảo rằng bạn không chọn bất kỳ tệp bổ sung nào (như thư mục bản dựng hoặc chi tiết git); nếu không, `make package_source` sẽ gói gọn tất cả mọi thứ trong thư mục nguồn. Bạn cũng có thể đặt trình tạo nguồn để tạo các loại tệp yêu thích của mình cho các gói nguồn:
+Bạn cũng có thể tạo một gói nguồn. Bạn nên đặt `CPACK_SOURCE_IGNORE_FILES` thành các biểu thức chính quy đảm bảo rằng bạn không chọn bất kỳ tệp bổ sung nào (như thư mục bản dựng hoặc chi tiết git); nếu không, `make package_source` sẽ đóng gói tất cả mọi thứ trong thư mục nguồn. Bạn cũng có thể đặt trình tạo nguồn để tạo các loại tệp ưa thích của bạn cho các gói nguồn:
 
 ```cmake
 set(CPACK_SOURCE_GENERATOR "TGZ;ZIP")
