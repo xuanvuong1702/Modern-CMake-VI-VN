@@ -19,7 +19,7 @@
   - [Các tiện ích](chapters/features/utilities.md)
   - [Các mô-đun hữu ích](chapters/features/modules.md)
   - [Các IDE](chapters/features/ides.md)
-  - [Gí lỗi (Debugging)](chapters/features/debug.md)
+  - [Gỡ lỗi (Debugging)](chapters/features/debug.md)
 - [Bao gồm các dự án](chapters/projects.md)
   - [Mô-đun con (Submodule)](chapters/projects/submodule.md)
   - [DownloadProject](chapters/projects/download.md)
